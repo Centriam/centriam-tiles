@@ -57,15 +57,9 @@ const themeColors = {
     RED: '#f71f2c',
 };
 
-
-interface NumberOverNumberTileConfig {
-    header1: string,
-    header2: string,
-}
-
 @TileRegistry.register
-class NumberOverNumberTile extends AbstractTile<NumberOverNumberTileConfig, {value1: string, value2: string}> {
-    renderImpl(style: Style) {
+class NumberOverNumberTile extends AbstractTile {
+    renderImpl(style) {
         const {
             header1,
             header2,
@@ -99,20 +93,9 @@ class NumberOverNumberTile extends AbstractTile<NumberOverNumberTileConfig, {val
     }
 }
 
-
-interface NPSSummaryCardConfig {
-    title: string,
-    sectionHeaders: string[],
-    style: Style,
-    headerStyle?: Style,
-    sectionHeaderStyle?: Style,
-    majorValueStyle?: Style,
-    minorValueStyle?: Style,
-}
-
 @TileRegistry.register
-class NPSSummaryCard extends AbstractTile<NPSSummaryCardConfig, {}> {
-    renderImpl(style: Style) {
+class NPSSummaryCard extends AbstractTile {
+    renderImpl(style) {
         const headerStyle = {
             ...defaultStyles.npsSummary.headerStyle,
             ...this.props.headerStyle,
@@ -136,7 +119,7 @@ class NPSSummaryCard extends AbstractTile<NPSSummaryCardConfig, {}> {
         return <div style={style}>
             <div style={headerStyle}>{this.props.title}</div>
 
-            {this.props.sectionHeaders.map((header: string) =>
+            {this.props.sectionHeaders.map(header =>
                 <div style={sectionHeaderStyle}>
                     {header}
                 </div>
@@ -322,6 +305,4 @@ render(
     </div>,
     document.getElementById('root')
 );
-
-
 

@@ -7,18 +7,15 @@ import * as ReactFauxDom from 'react-faux-dom';
 
 import * as d3 from 'd3';
 
-interface SimpleGraphConfig {
-
-}
 
 @TileRegistry.register
-class SimpleGraph extends AbstractTile<SimpleGraphConfig, number[][]> {
-    renderImpl(style: Style) {
+class SimpleGraph extends AbstractTile {
+    renderImpl(style) {
         const width = 800;
         const height = 600;
 
         const data = this.props.data;
-        const dataLength: number = data.length;
+        const dataLength = data.length;
         if (dataLength === 0) {
             return <div>
                 No data supplied.
@@ -27,10 +24,10 @@ class SimpleGraph extends AbstractTile<SimpleGraphConfig, number[][]> {
 
 
         // Get range of data
-        let xmin: number = data[0][0];
-        let xmax: number = data[0][0];
-        let ymin: number = data[0][1];
-        let ymax: number = data[0][1];
+        let xmin = data[0][0];
+        let xmax = data[0][0];
+        let ymin = data[0][1];
+        let ymax = data[0][1];
         for (let i = 0; i < dataLength; i++) {
             const [x, y] = data[i];
             xmin = Math.min(xmin, x);
@@ -39,8 +36,8 @@ class SimpleGraph extends AbstractTile<SimpleGraphConfig, number[][]> {
             ymax = Math.max(ymax, y);
         }
 
-        const xrange = (xmax as number) - (xmin as number);
-        const yrange = (ymax as number) - (ymin as number);
+        const xrange = (xmax) - (xmin);
+        const yrange = (ymax) - (ymin);
         const xscale = width / xrange;
         const yscale = height / yrange;
 
@@ -96,8 +93,8 @@ class SimpleGraph extends AbstractTile<SimpleGraphConfig, number[][]> {
  * @return {React.ReactElement<any>}
  */
 @TileRegistry.register
-class SimpleD3Graph extends AbstractTile<SimpleGraphConfig, number[][]> {
-    renderImpl(style: Style) {
+class SimpleD3Graph extends AbstractTile {
+    renderImpl(style) {
         const width = 800;
         const height = 600;
         const paddingLeft = 100;
@@ -106,15 +103,15 @@ class SimpleD3Graph extends AbstractTile<SimpleGraphConfig, number[][]> {
         const paddingRight = 30;
 
         const data = this.props.data;
-        const dataLength: number = data.length;
+        const dataLength = data.length;
         if (dataLength === 0) {
             return <div>
                 No data supplied.
             </div>
         }
 
-        const xextents = d3.extent(data, (values: number[]) => values[0]) as [number, number];
-        const yextents = d3.extent(data, (values: number[]) => values[1]) as [number, number];
+        const xextents = d3.extent(data, values => values[0]);
+        const yextents = d3.extent(data, values => values[1]);
         const xscale = d3.scaleLinear()
             .domain(xextents)
             .range([paddingLeft, width - paddingRight])
@@ -152,10 +149,10 @@ class SimpleD3Graph extends AbstractTile<SimpleGraphConfig, number[][]> {
                 .attr('fill', 'none');
         g.append('g')
             .attr('transform', `translate(${paddingLeft}, 0)`)
-            .call(d3.axisLeft(yscale) as any);
+            .call(d3.axisLeft(yscale));
         g.append('g')
             .attr('transform', `translate(0, ${height - paddingBottom})`)
-            .call(d3.axisBottom(xscale) as any);
+            .call(d3.axisBottom(xscale));
 
         return ret.toReact();
     }

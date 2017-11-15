@@ -5,46 +5,25 @@ import TileRegistry from 'src/TileRegistry';
 import {AbstractTile, Style, TileFactory, TileConfig} from 'src/tile';
 
 
+export const FlexDirection = Object.freeze({
+    HORIZONTAL: 'HORIZONTAL',
+    VERTICAL: 'VERTICAL',
+});
 
-
-interface GenericTileConfig {
-    // type: string,
-    card?: boolean,
-    style?: Style,
-}
-
-enum FlexDirection {
-    HORIZONTAL = 'HORIZONTAL',
-    VERTICAL = 'VERTICAL',
-}
-
-interface CardConfig extends GenericTileConfig {
-    childConfig: TileConfig,
-}
-
-interface FixedContainerConfig extends GenericTileConfig {
-    direction: FlexDirection,
-    childConfigs: TileConfig[], // This was going to be "children", but that's already a special property in React
-}
-
-interface VariableContainerConfig extends GenericTileConfig {
-    direction: FlexDirection,
-    childConfig: TileConfig[], // This was going to be "children", but that's already a special property in React
-}
 
 @TileRegistry.register
-class Card extends AbstractTile<CardConfig, any[]> {
-    renderImpl(style: Style){ return <div />; } // unused
+class Card extends AbstractTile {
+    renderImpl(style){ return <div />; } // unused
 
     render() {
-        const combinedStyles: Style = {
+        const combinedStyles = {
             ...(defaultStyles.card),
             ...(defaultStyles.container),
             ...(this.props.moreStyles),
             ...(this.props.style),
         };
 
-        const childStyle: Style = {
+        const childStyle = {
             flexGrow: 1,
         };
 
@@ -61,20 +40,20 @@ class Card extends AbstractTile<CardConfig, any[]> {
 }
 
 @TileRegistry.register
-class FixedContainer extends AbstractTile<FixedContainerConfig, any[]> {
-    renderImpl(style: Style) {
-        const childWrapperStyle: Style = this.props.direction == FlexDirection.VERTICAL ?
+class FixedContainer extends AbstractTile {
+    renderImpl(style) {
+        const childWrapperStyle = this.props.direction === FlexDirection.VERTICAL ?
             defaultStyles.containerVerticalWrapper :
             defaultStyles.containerHorizontalWrapper;
 
-        const childStyle: Style = this.props.direction == FlexDirection.VERTICAL ?
+        const childStyle = this.props.direction === FlexDirection.VERTICAL ?
             defaultStyles.containerVerticalChild :
             defaultStyles.containerHorizontalChild;
 
         return (
             <div style={style}>
                 <div style={childWrapperStyle}>
-                    {this.props.childConfigs.map((childConfig, index: number) =>
+                    {this.props.childConfigs.map((childConfig, index) =>
                         <TileFactory
                             config={childConfig}
                             data={this.props.data[index]}
@@ -90,7 +69,7 @@ class FixedContainer extends AbstractTile<FixedContainerConfig, any[]> {
 // @TileRegistry.register
 // class VariableContainer extends React.Component<TileImplProps<VariableContainerConfig, any[]>> {
 //     render() {
-//         const combinedStyles: Style = {
+//         const combinedStyles = {
 //             ...(defaultStyles.general),
 //             ...(this.props.card && defaultStyles.card),
 //             ...(defaultStyles.container),
@@ -98,11 +77,11 @@ class FixedContainer extends AbstractTile<FixedContainerConfig, any[]> {
 //             ...(this.props.style),
 //         };
 //
-//         const childWrapperStyle: Style = this.props.direction == FlexDirection.VERTICAL ?
+//         const childWrapperStyle = this.props.direction == FlexDirection.VERTICAL ?
 //             defaultStyles.containerVerticalWrapper :
 //             defaultStyles.containerHorizontalWrapper;
 //
-//         const childStyle: Style = this.props.direction == FlexDirection.VERTICAL ?
+//         const childStyle = this.props.direction == FlexDirection.VERTICAL ?
 //             defaultStyles.containerVerticalChild :
 //             defaultStyles.containerHorizontalChild;
 //
@@ -124,8 +103,8 @@ class FixedContainer extends AbstractTile<FixedContainerConfig, any[]> {
 
 
 @TileRegistry.register
-class TextTile extends AbstractTile<GenericTileConfig, any> {
-    renderImpl(style: Style) {
+class TextTile extends AbstractTile {
+    renderImpl(style) {
         return (
             <div style={style}>
                 {this.props.data}

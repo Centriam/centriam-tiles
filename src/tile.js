@@ -1,36 +1,17 @@
 import * as React from 'react';
+import { Component } from 'react';
 
 import TileRegistry from "src/TileRegistry";
 import {ComponentClass, or} from 'src/utils';
 import {defaultStyles} from "./providers";
 
-export type Style = { [key: string]: any };
-export interface TileConfig {
-    type: string,
-    card?: boolean,
-    [key: string]: any,
-}
-export interface TileProps {
-    config: TileConfig,
-    data: any,
-    style?: Style,
-}
-
-//export type TileImplProps<Config, Data> =
-export type AbstractTileProps<Data> = {
-    card?: boolean,
-    data: Data,
-    style?: Style,
-    moreStyles?: Style,
-}
-
 
 /**
  * Entry-point and lynch pin -- Resolves a tile configuration object into an implementing class
  */
-export class TileFactory extends React.Component <TileProps> {
+export class TileFactory extends Component {
     render() {
-        const Component = TileRegistry.get(this.props.config.type) as ComponentClass;
+        const Component = TileRegistry.get(this.props.config.type);
         if (Component) {
             return (
                 <Component
@@ -45,20 +26,20 @@ export class TileFactory extends React.Component <TileProps> {
     }
 }
 
-export abstract class AbstractTile<Config, Data> extends React.Component<Config & AbstractTileProps<Data>> {
+export class AbstractTile<Config, Data> extends Component {
 
-    abstract renderImpl(style: Style): JSX.Element|React.Component;
+    renderImpl(style) { throw new Error("Unimplemented abstract method"); }
 
     render() {
-        const style: Style = or<Style>(this.props.style, {});
-        const moreStyles: Style = or<Style>(this.props.moreStyles, {});
+        const style = this.props.style || {};
+        const moreStyles = this.props.moreStyles || {};
         if (this.props.card) {
             const combinedStyles = {
                 ...(defaultStyles.card),
                 ...(defaultStyles.container),
                 ...style,
                 ...moreStyles,
-            } as Style;
+            };
             return (
                 <div style={combinedStyles}>
                     {this.renderImpl({flexGrow: 1})}
@@ -68,7 +49,7 @@ export abstract class AbstractTile<Config, Data> extends React.Component<Config 
             const combinedStyles = {
                 ...(moreStyles),
                 ...(style),
-            } as Style;
+            };
             return this.renderImpl(combinedStyles);
         }
     }
