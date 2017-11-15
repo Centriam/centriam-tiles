@@ -5,7 +5,7 @@ const _tileComponentMap: Map<string, ComponentClass> = new Map<string, Component
 
 
 export default deepFreeze(bindMethods({
-    register<P, S, C extends React.Component<P, S>>(component: new() => C): new() => C {
+    register<P, S, C extends React.Component<P, S>>(component: new(...args: any[]) => C): new(...args: any[]) => C {
         this.addComponent(component.name, component);
         return component;
     },

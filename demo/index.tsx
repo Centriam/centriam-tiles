@@ -313,15 +313,8 @@ render(
 
         <TileFactory
             config={{
-                type: 'SimpleGraph',
-
-            }}
-            data={US_POPULATION}
-        />
-
-        <TileFactory
-            config={{
                 type: 'SimpleD3Graph',
+                card: true,
 
             }}
             data={US_POPULATION}

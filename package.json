@@ -11,6 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/d3": "^4.11.1",
+    "@types/es6-collections": "^0.5.31",
     "@types/react": "^16.0.21",
     "@types/react-dom": "^16.0.2",
     "@types/react-faux-dom": "^3.2.0",
