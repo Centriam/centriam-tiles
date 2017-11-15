@@ -74,7 +74,7 @@ export const defaultStyles = deepFreeze({
             get fontFamily() { return styleSettings.fontFamily; },
             get fontSize() { return styleSettings.fontSize; },
             fontWeight: 600,
-        } as React.CSSProperties,
+        },
         header1Style: {
             color: '#999',
         },
@@ -96,7 +96,7 @@ export const defaultStyles = deepFreeze({
             get fontFamily() { return styleSettings.fontFamily; },
             get fontSize() { return styleSettings.fontSize; },
             fontWeight: 600,
-        } as React.CSSProperties,
+        },
         headerStyle: {
             textTransform: 'uppercase',
         },
@@ -111,3 +111,4 @@ export const defaultStyles = deepFreeze({
         },
     },
 });
+//

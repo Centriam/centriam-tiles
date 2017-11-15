@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: "./demo/index.tsx",
+    entry: "./demo/index.js",
     output: {
         filename: "bundle.js",
         path: __dirname + "/demo"
@@ -22,15 +22,15 @@ module.exports = {
     module: {
         rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-            { test: /\.tsx?$/, use: [{
-                loader: "ts-loader",
-                options: {
+            { test: /\.jsx?$/, use: [{
+                loader: "babel-loader",
+                // options: {
                     // transpileOnly: true,
-                },
+                // },
             }]},
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+            // { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
     },
 
@@ -47,6 +47,7 @@ module.exports = {
         contentBase: path.join(__dirname, '/demo'),
         compress: true,
         port: 9000,
+        host: '0.0.0.0',
     },
 };
 

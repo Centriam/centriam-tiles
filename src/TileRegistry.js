@@ -1,24 +1,24 @@
 import {bindMethods, ComponentClass, deepFreeze} from 'src/utils';
 
 
-const _tileComponentMap: Map<string, ComponentClass> = new Map<string, ComponentClass>();
+const _tileComponentMap = new Map();
 
 
 export default deepFreeze(bindMethods({
-    register<P, S, C extends React.Component<P, S>>(component: new(...args: any[]) => C): new(...args: any[]) => C {
+    register(component) {
         this.addComponent(component.name, component);
         return component;
     },
 
-    addComponent(name: string, component: ComponentClass) {
+    addComponent(name, component) {
         _tileComponentMap.set(name, component);
     },
 
-    get(name: string): (ComponentClass | undefined) {
+    get(name) {
         return _tileComponentMap.get(name);
     },
 
-    has(name: string): boolean {
+    has(name) {
         return _tileComponentMap.has(name)
     },
 }));
