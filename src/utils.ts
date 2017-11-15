@@ -26,3 +26,13 @@ export function bindMethods<T extends {[key: string]: any}>(thing: T): T {
     }
     return thing;
 }
+
+// Typescript can't figure out that the "||" operator eliminates "undefined" from an object's type
+export function or<T> (...values: (T|undefined|null)[]): T {
+    for (let value of values) {
+        if (value !== undefined && value !== null) {
+            return value;
+        }
+    }
+    throw new Error("All supplied values are undefined or null")
+}

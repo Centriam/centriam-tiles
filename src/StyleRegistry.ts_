@@ -1,14 +1,7 @@
 import {bindMethods, ComponentClass, deepFreeze} from 'src/utils';
+import {Style} from "./tile";
 
-/*
-    Providers:
-    - TileFactory registry (associate name with tile component)
-    - Cell registry (associate name with component subclassing CentriamTableCell)
-    - Stylesheet registry (configure and source global styles once for an application)
- */
-
-
-export const styleSettings = deepFreeze({
+const styleSettings = deepFreeze({
     hPadding: '2em',
     vPadding: '2em',
     fontFamily: '"Nunito Sans",sans-serif',
@@ -17,7 +10,7 @@ export const styleSettings = deepFreeze({
 });
 
 
-export const defaultStyles = deepFreeze({
+const defaultStyles = deepFreeze({
     general: {
         get fontFamily() { return styleSettings.fontFamily; },
     },
@@ -111,3 +104,56 @@ export const defaultStyles = deepFreeze({
         },
     },
 });
+
+const defaultStyles = new Map<string, Map<string, Style>>();
+
+function resolveComponentStylesheets(componentName: string) {
+
+}
+
+function resolveStylesheet(
+    componentName: string,
+    subComponentName: string,
+) {
+    let componentStyles: Map<string, Style>;
+    if (!defaultStyles.has(componentName)) {
+        componentStyles = new Map();
+        defaultStyles.set(componentName, componentStyles);
+    }
+
+    let stylesheet: Style;
+    if (!componentStyles.has(componentName)) {
+        stylesheet = {};
+        componentStyles.set(componentName, stylesheet);
+    }
+}
+
+export default deepFreeze(bindMethods({
+    defineStylesheet<S extends Style>(
+        componentName: string,
+        subComponentName: string,
+        defaultStylesheet: S,
+    ): S {
+        const componentStyles = defaultStyles.get(componentName);
+        if (componentStyles === undefined) {
+            const componentStyles = new Map<string, Style>();
+            defaultStyles.set(componentName, componentStyles);
+            componentStyles.set(subComponentName, defaultStylesheet);
+        } else if (componentStyles.has(subComponentName)) {
+            throw new Error(`Stylesheet ${componentName} > ${subComponentName} is already defined`);
+        } else {
+            componentStyles.set(subComponentName, defaultStylesheet);
+        }
+
+        return defaultStylesheet;
+    },
+
+    getStylesheet(
+        componentName: string,
+        subComponentName: string,
+        ...overrides: Style[] = [],
+    ): Style {
+        return Object.assign({}, resolveStylesheet(componentName, subComponentName), ...overrides);
+    }
+}))
+

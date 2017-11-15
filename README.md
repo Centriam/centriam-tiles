@@ -74,3 +74,12 @@ Your tile will be available through `<Tile />` configurations
 ```
 
 
+# Build targets:
+
+1. Dev Server -- include index.tsx and index.html.
+    - run `webpack-dev-server` inside Docker container
+    - Use project's own `node_modules` directory so IDE can see library dependencies
+2. Something linkable from CX Manager
+    - MUST run typescript over project
+    - MAY preserve ES6 and JSX
+    - Consider making project `node_modules` directory ephemeral 

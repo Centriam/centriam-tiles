@@ -2,7 +2,7 @@
 // noinspection JSLastCommaInObjectLiteral, JSLastCommaInArrayLiteral
 export const schema = {
 
-    title: 'Centriam Tile configuration schema',
+    title: 'Centriam TileFactory configuration schema',
 
     type: 'object',
     required: ['type'],
@@ -16,7 +16,7 @@ export const schema = {
         {$ref: '#/definitions/NUMBER_X_NUMBER'},
         {$ref: '#/definitions/TABLE'},
     ],
-    
+
     definitions: {
         _styles: {
             description: 'Object containing React-compatible CSS properties',
@@ -28,7 +28,7 @@ export const schema = {
                 ]
             }
         },
-    
+
         TILE: {
             required: ['child'],
             properties: {

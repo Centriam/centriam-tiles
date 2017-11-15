@@ -1,8 +1,8 @@
-export { Tile } from './tile';
-export { TileImplProps } from './tiles';
-export { TileRegistry } from './providers';
+export { AbstractTile, TileFactory, Style } from 'src/tile';
+export { default as TileRegistry } from 'src/TileRegistry';
 
 // Load tiles so they self-register
-import './tiles';
+import './tiles/containers';
+import './tiles/basicgraphs';
 
 

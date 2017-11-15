@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import {TileRegistry, defaultStyles, styleSettings} from './providers';
-import {Style, Tile, TileConfig} from './tile';
+import {defaultStyles, styleSettings} from 'src/providers';
+import TileRegistry from 'src/TileRegistry';
+import {AbstractTile, Style, TileFactory, TileConfig} from 'src/tile';
 
 
 
-export type TileImplProps<Config, Data> = Config & { data: Data, moreStyles?: Style, };
 
 interface GenericTileConfig {
     // type: string,
@@ -33,10 +33,11 @@ interface VariableContainerConfig extends GenericTileConfig {
 }
 
 @TileRegistry.register
-class Card extends React.Component<TileImplProps<CardConfig, any[]>> {
+class Card extends AbstractTile<CardConfig, any[]> {
+    renderImpl(style: Style){ return <div />; } // unused
+
     render() {
         const combinedStyles: Style = {
-            // ...(defaultStyles.general),
             ...(defaultStyles.card),
             ...(defaultStyles.container),
             ...(this.props.moreStyles),
@@ -49,7 +50,7 @@ class Card extends React.Component<TileImplProps<CardConfig, any[]>> {
 
         return (
             <div style={combinedStyles}>
-                <Tile
+                <TileFactory
                     config={this.props.childConfig}
                     data={this.props.data}
                     style={childStyle}
@@ -60,16 +61,8 @@ class Card extends React.Component<TileImplProps<CardConfig, any[]>> {
 }
 
 @TileRegistry.register
-class FixedContainer extends React.Component<TileImplProps<FixedContainerConfig, any[]>> {
-    render() {
-        const combinedStyles: Style = {
-            // ...(defaultStyles.general),
-            ...(this.props.card && defaultStyles.card),
-            ...(defaultStyles.container),
-            ...(this.props.moreStyles),
-            ...(this.props.style),
-        };
-
+class FixedContainer extends AbstractTile<FixedContainerConfig, any[]> {
+    renderImpl(style: Style) {
         const childWrapperStyle: Style = this.props.direction == FlexDirection.VERTICAL ?
             defaultStyles.containerVerticalWrapper :
             defaultStyles.containerHorizontalWrapper;
@@ -79,10 +72,10 @@ class FixedContainer extends React.Component<TileImplProps<FixedContainerConfig,
             defaultStyles.containerHorizontalChild;
 
         return (
-            <div style={combinedStyles}>
+            <div style={style}>
                 <div style={childWrapperStyle}>
                     {this.props.childConfigs.map((childConfig, index: number) =>
-                        <Tile
+                        <TileFactory
                             config={childConfig}
                             data={this.props.data[index]}
                             style={childStyle}
@@ -117,7 +110,7 @@ class FixedContainer extends React.Component<TileImplProps<FixedContainerConfig,
 //             <div style={combinedStyles}>
 //                 <div style={childWrapperStyle}>
 //                     {this.props.childConfigs.map((childConfig, index: number) =>
-//                         <Tile
+//                         <TileFactory
 //                             config={childConfig}
 //                             data={this.props.data[index]}
 //                             style={childStyle}
@@ -131,17 +124,10 @@ class FixedContainer extends React.Component<TileImplProps<FixedContainerConfig,
 
 
 @TileRegistry.register
-class TextTile extends React.Component<TileImplProps<GenericTileConfig, any>> {
-    render() {
-        const combinedStyles: Style = {
-            ...(defaultStyles.general),
-            ...(this.props.card && defaultStyles.card),
-            ...(this.props.moreStyles),
-            ...(this.props.style),
-        };
-
+class TextTile extends AbstractTile<GenericTileConfig, any> {
+    renderImpl(style: Style) {
         return (
-            <div style={combinedStyles}>
+            <div style={style}>
                 {this.props.data}
             </div>
         );
