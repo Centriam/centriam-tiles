@@ -1,0 +1,8 @@
+version: '2.2'
+
+services:
+    dev-server:
+        image: node:9.1-slim
+        command: bash -c 'cd /opt/centriam-tiles && npm install && /opt/centriam-tiles/node_modules/.bin/webpack-dev-server --color'
+        volumes:
+            - .:/opt/centriam-tiles

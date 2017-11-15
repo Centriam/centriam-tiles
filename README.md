@@ -22,8 +22,7 @@ The build system is a work-in-progress. Eventually, this should all be handled i
 For now, this should get a dev server up and running:
 
 ```bash
-$ npm install
-$ webpack-dev-server
+$ docker-compose up dev-server
 ```
 
 
