@@ -4,6 +4,13 @@ import {render} from 'react-dom';
 import {AbstractTile, TileFactory, TileRegistry, Style} from "src/index";
 import {defaultStyles} from "src/providers";
 
+import tileContainerConfig from 'src/containers/TileContainer';
+import cardContainerConfig from 'src/containers/CardContainer';
+import horizontalContainerConfig from 'src/containers/HorizontalContainer';
+import toggleContainerConfig from 'src/containers/ToggleContainer';
+import numberOverNumberConfig, {headerMapping} from 'src/visuals/NumberOverNumber';
+
+/*
 const config = {
     type: 'FixedContainer',
     direction: 'HORIZONTAL',
@@ -57,41 +64,6 @@ const themeColors = {
     RED: '#f71f2c',
 };
 
-@TileRegistry.register
-class NumberOverNumberTile extends AbstractTile {
-    renderImpl(style) {
-        const {
-            header1,
-            header2,
-            data,
-        } = this.props;
-
-        const header1Style = {
-            ...defaultStyles.numberOverNumber.header1Style,
-        };
-
-        const value1Style = {
-            ...defaultStyles.numberOverNumber.value1Style,
-        };
-
-        const header2Style = {
-            ...defaultStyles.numberOverNumber.header2Style,
-        };
-
-        const value2Style = {
-            ...defaultStyles.numberOverNumber.value2Style,
-        };
-
-        return (
-            <div style={style}>
-                <div style={header1Style}>{header1}</div>
-                <div style={value1Style}>{data.value1}</div>
-                <div style={header2Style}>{header2}</div>
-                <div style={value2Style}>{data.value2}</div>
-            </div>
-        );
-    }
-}
 
 @TileRegistry.register
 class NPSSummaryCard extends AbstractTile {
@@ -154,154 +126,133 @@ class NPSSummaryCard extends AbstractTile {
 //     }
 // }
 
+*/
+
+
+let numberOverNumberConf = new numberOverNumberConfig({
+    headerMappings: [
+        new headerMapping({
+            dataHeader: 'Header 1',
+            displayHeader: "First",
+            headerStyle: headerMapping.STYLES.defaultPrimary.headerStyle,
+            dataStyle: headerMapping.STYLES.defaultPrimary.dataStyle
+        }),
+        new headerMapping({
+            dataHeader: 'Header 2',
+            displayHeader: "LAST",
+            headerStyle: headerMapping.STYLES.defaultSecondary.headerStyle,
+            dataStyle: headerMapping.STYLES.defaultSecondary.dataStyle
+        })
+    ]
+});
+
+
+let config = new tileContainerConfig({
+    label: 'Tile Container',
+    icon: <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 0h24v24H0z" fill="none"/>
+        <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+    </svg>,
+    childConfig: numberOverNumberConf
+});
+
+
+let config2 = new cardContainerConfig({
+    childConfig: numberOverNumberConf
+});
+
+
+
+let data = {
+    headers: ['x', 'Header 1', 'Header 2', 'Header 3'],
+    data: [
+        {x: 1, 'Header 1': 123, 'Header 2': 456, 'Header 3': 789},
+        {x: 2, 'Header 1': 234, 'Header 2': 567, 'Header 3': 890},
+        {x: 3, 'Header 1': 346, 'Header 2': 678, 'Header 3': 891},
+        {x: 4, 'Header 1': 457, 'Header 2': 789, 'Header 3': 901},
+    ]
+};
+
+
+let config3 = new horizontalContainerConfig({
+    childrenConfigs: [
+        new cardContainerConfig({
+            childConfig: {...numberOverNumberConf, dataIndex: 0},
+            style:{backgroundColor:'#55F'}
+        }),
+        new cardContainerConfig({
+            childConfig: {...numberOverNumberConf, dataIndex: 1}
+        }),
+        new cardContainerConfig({
+            childConfig: {...numberOverNumberConf, dataIndex: 2}
+        }),
+        new cardContainerConfig({
+            childConfig: {...numberOverNumberConf, dataIndex: 3}
+        }),
+    ]
+});
+
+let config4 = new tileContainerConfig({
+    label: 'Containing Container',
+    icon: <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 0h24v24H0z" fill="none"/>
+        <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+    </svg>,
+    childConfig: config3
+});
+
+let config5 = new tileContainerConfig();
+config5.childConfig = new cardContainerConfig();
+config5.childConfig.childConfig = new tileContainerConfig();
+config5.childConfig.childConfig.childConfig = new cardContainerConfig();
+config5.childConfig.childConfig.childConfig.childConfig = new tileContainerConfig({
+    childConfig: config2
+    }
+);
+
+let config6 = new tileContainerConfig({
+    style: {width: 500},
+    childConfig: new toggleContainerConfig({
+        childrenConfigs: [
+            new cardContainerConfig({
+                label: "First",
+                childConfig: {...numberOverNumberConf, dataIndex: 0},
+                style: {backgroundColor: '#55F'}
+            }),
+            new cardContainerConfig({
+                childConfig: {...numberOverNumberConf, dataIndex: 1},
+                style: {backgroundColor: '#33a'}
+            })
+        ]
+    })
+});
 
 
 render(
     <div>
         <TileFactory config={config} data={data} />
 
-        <br />
+        <br/>
 
-        <TileFactory
-            config={{
-                type: 'FixedContainer',
-                childConfigs: [
-                    {
-                        type: 'NumberOverNumberTile',
-                        card: true,
-                        header1: 'Total Customers in Campaign',
-                        header2: 'Percentage of All Customers',
-                    },
-                    {
-                        type: 'NumberOverNumberTile',
-                        card: true,
-                        header1: 'Contact Customers',
-                        header2: 'Percentage of Campaign Customers',
-                    },
-                    {
-                        type: 'NumberOverNumberTile',
-                        card: true,
-                        header1: 'Left to Contact',
-                        header2: 'Percentage of Campaign Customers',
-                    },
-                    {
-                        type: 'NumberOverNumberTile',
-                        card: true,
-                        header1: 'Customers in Control Group',
-                        header2: 'Percentage of All Customers',
-                    },
-                ]
-            }}
-            data={[
-                {
-                    value1: '2,500',
-                    value2: '14.68%',
-                },
-                {
-                    value1: 1459,
-                    value2: '58.36%',
-                },
-                {
-                    value1: 1041,
-                    value2: '41.64%',
-                },
-                {
-                    value1: 750,
-                    value2: '30.00%',
-                },
-            ]}
-        />
+        <TileFactory config={config2} data={data} />
 
         <br />
 
-        <TileFactory
-            config={{
-                type: 'NPSSummaryCard',
-                sectionHeaders: [
-                    'Customers',
-                    'Percentage',
-                ],
-                style: {
-                    background: themeColors.GREEN,
-                    color: 'white',
-                }
-            }}
-            data={[
-                500,
-                '20.00',
-            ]}
-        />
-        {/*
-        <TileFactory
-            config={{
-                type: 'NPSSummary',
-            }}
-            data={[
-                [
-                    [
-                        'Recommended Offers Given',
-                        100,
-                        '50.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Given',
-                        20,
-                        '20.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Accepted',
-                        99,
-                        '99.00%',
-                    ],
-                ],
-                [
-                    [
-                        'Recommended Offers Given',
-                        60,
-                        '30.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Given',
-                        35,
-                        '35.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Accepted',
-                        50,
-                        '83.33%',
-                    ],
-                ],
-                [
-                    [
-                        'Recommended Offers Given',
-                        40,
-                        '40.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Given',
-                        45,
-                        '45.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Accepted',
-                        31,
-                        '77.50%',
-                    ],
-                ],
-            ]}
-        />
-        */}
+        <TileFactory config={config3} data={data} />
 
         <br />
 
-        <TileFactory
-            config={{
-                type: 'SimpleD3Graph',
-                card: true,
+        <TileFactory config={config4} data={data} />
 
-            }}
-            data={US_POPULATION}
-        />
+        <br />
+
+        <TileFactory config={config5} data={data} />
+
+        <br />
+
+        <TileFactory config={config6} data={data} />
+
+
     </div>,
     document.getElementById('root')
 );
