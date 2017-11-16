@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import TileRegistry from "src/TileRegistry";
+import TileRegistry from "../TileRegistry";
 import {AbstractTile, Style} from "../tile";
 
 import * as ReactFauxDom from 'react-faux-dom';
