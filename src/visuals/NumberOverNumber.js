@@ -47,7 +47,7 @@ const numberOverNumberStyles = {
 
 
 @TileTypes.register
-export default class numberOverNumberConfig  extends AbstractVisual {
+export default class NumberOverNumberConfig  extends AbstractVisual {
     constructor(json){
         super(json);
 

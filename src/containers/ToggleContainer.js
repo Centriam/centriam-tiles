@@ -21,11 +21,13 @@ const ToggleContainerStyles = {
                 color: '#fff',
                 backgroundColor: '#ADB3BF',
                 border: '1px solid #ADB3BF',
+                padding: '5px 10px'
             },
             inactive: {
                 color: '#ADB3BF',
                 backgroundColor: '#fff',
                 border: '1px solid #ADB3BF',
+                padding: '5px 10px',
             }
         }
     }
