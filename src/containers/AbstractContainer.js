@@ -2,7 +2,7 @@ import Abstract from '../Abstracts';
 import {valueOrDefault} from '../utils';
 import TileTypeRegistry from '../TileTypeRegistry'
 
-export default class AbstractContainer extends Abstract {
+export default class AbstractContainerConfig extends Abstract {
     constructor(json){
         super(json);
         this.childConfig = valueOrDefault(

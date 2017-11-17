@@ -4,11 +4,11 @@ import {render} from 'react-dom';
 import {AbstractTile, TileFactory, TileRegistry, Style} from "src/index";
 import {defaultStyles} from "src/providers";
 
-import tileContainerConfig from 'src/containers/TileContainer';
-import cardContainerConfig from 'src/containers/CardContainer';
-import horizontalContainerConfig from 'src/containers/HorizontalContainer';
-import toggleContainerConfig from 'src/containers/ToggleContainer';
-import numberOverNumberConfig, {headerMapping} from 'src/visuals/NumberOverNumber';
+import TileContainerConfig from 'src/containers/TileContainer';
+import CardContainerConfig from 'src/containers/CardContainer';
+import HorizontalContainerConfig from 'src/containers/HorizontalContainer';
+import ToggleContainerConfig from 'src/containers/ToggleContainer';
+import NumberOverNumberConfig, {headerMapping} from 'src/visuals/NumberOverNumber';
 
 /*
 const config = {
@@ -129,7 +129,7 @@ class NPSSummaryCard extends AbstractTile {
 */
 
 
-let numberOverNumberConf = new numberOverNumberConfig({
+let numberOverNumberConf = new NumberOverNumberConfig({
     headerMappings: [
         new headerMapping({
             dataHeader: 'Header 1',
@@ -147,7 +147,7 @@ let numberOverNumberConf = new numberOverNumberConfig({
 });
 
 
-let config = new tileContainerConfig({
+let config = new TileContainerConfig({
     label: 'Tile Container',
     icon: <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
         <path d="M0 0h24v24H0z" fill="none"/>
@@ -157,7 +157,7 @@ let config = new tileContainerConfig({
 });
 
 
-let config2 = new cardContainerConfig({
+let config2 = new CardContainerConfig({
     childConfig: numberOverNumberConf
 });
 
@@ -174,25 +174,25 @@ let data = {
 };
 
 
-let config3 = new horizontalContainerConfig({
+let config3 = new HorizontalContainerConfig({
     childrenConfigs: [
-        new cardContainerConfig({
+        new CardContainerConfig({
             childConfig: {...numberOverNumberConf, dataIndex: 0},
             style:{backgroundColor:'#55F'}
         }),
-        new cardContainerConfig({
+        new CardContainerConfig({
             childConfig: {...numberOverNumberConf, dataIndex: 1}
         }),
-        new cardContainerConfig({
+        new CardContainerConfig({
             childConfig: {...numberOverNumberConf, dataIndex: 2}
         }),
-        new cardContainerConfig({
+        new CardContainerConfig({
             childConfig: {...numberOverNumberConf, dataIndex: 3}
         }),
     ]
 });
 
-let config4 = new tileContainerConfig({
+let config4 = new TileContainerConfig({
     label: 'Containing Container',
     icon: <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
         <path d="M0 0h24v24H0z" fill="none"/>
@@ -201,25 +201,25 @@ let config4 = new tileContainerConfig({
     childConfig: config3
 });
 
-let config5 = new tileContainerConfig();
-config5.childConfig = new cardContainerConfig();
-config5.childConfig.childConfig = new tileContainerConfig();
-config5.childConfig.childConfig.childConfig = new cardContainerConfig();
-config5.childConfig.childConfig.childConfig.childConfig = new tileContainerConfig({
+let config5 = new TileContainerConfig();
+config5.childConfig = new CardContainerConfig();
+config5.childConfig.childConfig = new TileContainerConfig();
+config5.childConfig.childConfig.childConfig = new CardContainerConfig();
+config5.childConfig.childConfig.childConfig.childConfig = new TileContainerConfig({
     childConfig: config2
     }
 );
 
-let config6 = new tileContainerConfig({
+let config6 = new TileContainerConfig({
     style: {width: 500},
-    childConfig: new toggleContainerConfig({
+    childConfig: new ToggleContainerConfig({
         childrenConfigs: [
-            new cardContainerConfig({
+            new CardContainerConfig({
                 label: "First",
                 childConfig: {...numberOverNumberConf, dataIndex: 0},
                 style: {backgroundColor: '#55F'}
             }),
-            new cardContainerConfig({
+            new CardContainerConfig({
                 childConfig: {...numberOverNumberConf, dataIndex: 1},
                 style: {backgroundColor: '#33a'}
             })

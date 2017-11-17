@@ -10,10 +10,24 @@ const ToggleContainerStyles = {
     containerStyle: {
       position:'relative',
     },
-    buttonContainerStyle: {
-      position:'absolute',
-      top:10,
-      right:10,
+    buttons: {
+        containerStyle: {
+            position:'absolute',
+            top:10,
+            right:10,
+        },
+        buttonStyle: {
+            active: {
+                color: '#fff',
+                backgroundColor: '#ADB3BF',
+                border: '1px solid #ADB3BF',
+            },
+            inactive: {
+                color: '#ADB3BF',
+                backgroundColor: '#fff',
+                border: '1px solid #ADB3BF',
+            }
+        }
     }
 };
 
@@ -53,9 +67,19 @@ class ToggleContainer extends React.Component {
 
         return (
         <div style={Object.assign({}, ToggleContainerStyles.containerStyle, moreStyles, config.style)}>
-            <div style={Object.assign({}, ToggleContainerStyles.buttonContainerStyle)}>
+            <div style={Object.assign({}, ToggleContainerStyles.buttons.containerStyle)}>
                 {config.childrenConfigs.map((child, i)=>
-                    <button onClick={()=>{this.setState({active:child})}} key={i}>
+                    <button
+                        key={i}
+                        onClick={(e)=>{
+                            this.setState({active:child});
+                            e.target.blur();
+                        }}
+                        style={this.state.active === child ?
+                            ToggleContainerStyles.buttons.buttonStyle.active :
+                            ToggleContainerStyles.buttons.buttonStyle.inactive
+                        }
+                    >
                         {child.label || child.configType.split(/(?=[A-Z])/).join(' ')}
                     </button>
                 )}
