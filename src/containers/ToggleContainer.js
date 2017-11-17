@@ -16,19 +16,33 @@ const ToggleContainerStyles = {
             top:10,
             right:10,
         },
-        buttonStyle: {
-            active: {
-                color: '#fff',
-                backgroundColor: '#ADB3BF',
-                border: '1px solid #ADB3BF',
-                padding: '5px 10px'
-            },
-            inactive: {
-                color: '#ADB3BF',
-                backgroundColor: '#fff',
-                border: '1px solid #ADB3BF',
-                padding: '5px 10px',
-            }
+        base: {
+            padding: '5px 10px',
+            border: '1px solid #ADB3BF',
+            borderRightWidth: 0,
+            borderLeftWidth: 0,
+        },
+        addBorders: {
+          borderRightWidth:1,
+          borderLeftWidth:1,
+        },
+        first: {
+            borderTopLeftRadius: 1,
+            borderBottomLeftRadius: 2,
+            borderLeftWidth: 1,
+        },
+        last: {
+            borderTopRightRadius: 1,
+            borderBottomRightRadius: 1,
+            borderRightWidth: 1,
+        },
+        active: {
+            color: '#fff',
+            backgroundColor: '#ADB3BF',
+        },
+        inactive: {
+            color: '#ADB3BF',
+            backgroundColor: '#fff',
         }
     }
 };
@@ -73,14 +87,21 @@ class ToggleContainer extends React.Component {
                 {config.childrenConfigs.map((child, i)=>
                     <button
                         key={i}
+                        id={i}
                         onClick={(e)=>{
                             this.setState({active:child});
                             e.target.blur();
                         }}
-                        style={this.state.active === child ?
-                            ToggleContainerStyles.buttons.buttonStyle.active :
-                            ToggleContainerStyles.buttons.buttonStyle.inactive
-                        }
+                        style={Object.assign({},
+                            ToggleContainerStyles.buttons.base,
+                            (this.state.active === child ?
+                                ToggleContainerStyles.buttons.active :
+                                ToggleContainerStyles.buttons.inactive
+                            ),
+                            i === 0 ? ToggleContainerStyles.buttons.first : {},
+                            i === config.childrenConfigs.length-1 ? ToggleContainerStyles.buttons.last : {},
+                            i % 2 ? ToggleContainerStyles.buttons.addBorders : {},
+                        )}
                     >
                         {child.label || child.configType.split(/(?=[A-Z])/).join(' ')}
                     </button>

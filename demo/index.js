@@ -224,6 +224,7 @@ let config5 = Object.assign({}, tileContainerConfig, {
                 childConfig: {...numberOverNumberConf, dataIndex: 0},
                 style: {backgroundColor: '#55F'}
             }),
+            {...numberOverNumberConf, dataIndex: 0, label:'second', style: {backgroundColor: '#55C'}},
             {...numberOverNumberConf, dataIndex: 1,   style: {backgroundColor: '#33a'}},
         ]
     })
