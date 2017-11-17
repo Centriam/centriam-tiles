@@ -10,6 +10,7 @@ import ToggleContainerConfig from 'src/containers/ToggleContainer';
 import NumberOverNumberConfig, {headerMapping} from 'src/visuals/NumberOverNumber';
 
 import LineGraphConfig from 'src/visuals/LineGraph';
+import AreaGraphConfig from 'src/visuals/AreaGraph';
 
 /*
 const config = {
@@ -227,13 +228,28 @@ let config5 = Object.assign({}, tileContainerConfig, {
                 xAxisColumn: data.headers[0],
                 yAxisColumn: data.headers[1],
             }),
+            new AreaGraphConfig({
+                label: 'first - area',
+                xAxisColumn: data.headers[0],
+                yAxisColumn: data.headers[1],
+            }),
             new LineGraphConfig({
                 label: 'second',
                 xAxisColumn: data.headers[0],
                 yAxisColumn: data.headers[2],
             }),
+            new AreaGraphConfig({
+                label: 'second - area',
+                xAxisColumn: data.headers[0],
+                yAxisColumn: data.headers[2],
+            }),
             new LineGraphConfig({
                 label: 'third',
+                xAxisColumn: data.headers[0],
+                yAxisColumn: data.headers[3],
+            }),
+            new AreaGraphConfig({
+                label: 'third - area',
                 xAxisColumn: data.headers[0],
                 yAxisColumn: data.headers[3],
             })
