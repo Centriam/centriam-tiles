@@ -1,4 +1,4 @@
-import {bindMethods, ComponentClass, deepFreeze} from 'src/utils';
+import {ComponentClass, deepFreeze} from './utils';
 
 /*
     Providers:

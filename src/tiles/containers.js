@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import {defaultStyles, styleSettings} from 'src/providers';
-import TileRegistry from 'src/TileRegistry';
-import {AbstractTile, Style, TileFactory, TileConfig} from 'src/tile';
+import {defaultStyles, styleSettings} from '../providers';
+import TileRegistry from '../TileRegistry';
+import {AbstractTile, Style, TileFactory, TileConfig} from '../tile';
 
 
 export const FlexDirection = Object.freeze({

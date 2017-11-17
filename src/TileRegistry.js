@@ -1,4 +1,4 @@
-import {bindMethods, ComponentClass, deepFreeze} from 'src/utils';
+import {bindMethods, ComponentClass, deepFreeze} from './utils';
 
 
 const _tileComponentMap = new Map();
