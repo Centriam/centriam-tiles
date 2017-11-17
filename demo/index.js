@@ -9,6 +9,8 @@ import HorizontalContainerConfig from 'src/containers/HorizontalContainer';
 import ToggleContainerConfig from 'src/containers/ToggleContainer';
 import NumberOverNumberConfig, {headerMapping} from 'src/visuals/NumberOverNumber';
 
+import LineGraphConfig from 'src/visuals/LineGraph';
+
 /*
 const config = {
     type: 'FixedContainer',
@@ -178,14 +180,16 @@ let config2 = new CardContainerConfig({
 
 let data = {
     headers: ['x', 'Header 1', 'Header 2', 'Header 3'],
-    data: [
-        {x: 1, 'Header 1': 123, 'Header 2': 456, 'Header 3': 789},
-        {x: 2, 'Header 1': 234, 'Header 2': 567, 'Header 3': 890},
-        {x: 3, 'Header 1': 346, 'Header 2': 678, 'Header 3': 891},
-        {x: 4, 'Header 1': 457, 'Header 2': 789, 'Header 3': 901},
-    ]
+    data: []
 };
 
+for(let i = 0; i < 100; i++){
+    let point = {[data.headers[0]]: i};
+    for(let j = 1; j < data.headers.length; j++){
+        point[data.headers[j]] = Math.floor(Math.random()*100);
+    }
+    data.data.push(point);
+}
 
 let config3 = new HorizontalContainerConfig({
     childrenConfigs: [
@@ -216,16 +220,23 @@ let config4 = Object.assign({}, tileContainerConfig, {
 
 
 let config5 = Object.assign({}, tileContainerConfig, {
-    style: {width: 500},
     childConfig: new ToggleContainerConfig({
         childrenConfigs: [
-            new CardContainerConfig({
-                label: "First",
-                childConfig: {...numberOverNumberConf, dataIndex: 0},
-                style: {backgroundColor: '#55F'}
+            new LineGraphConfig({
+                label: 'first',
+                xAxisColumn: data.headers[0],
+                yAxisColumn: data.headers[1],
             }),
-            {...numberOverNumberConf, dataIndex: 0, label:'second', style: {backgroundColor: '#55C'}},
-            {...numberOverNumberConf, dataIndex: 1,   style: {backgroundColor: '#33a'}},
+            new LineGraphConfig({
+                label: 'second',
+                xAxisColumn: data.headers[0],
+                yAxisColumn: data.headers[2],
+            }),
+            new LineGraphConfig({
+                label: 'third',
+                xAxisColumn: data.headers[0],
+                yAxisColumn: data.headers[3],
+            })
         ]
     })
 });
@@ -250,6 +261,7 @@ render(
         <br />
 
         <TileFactory config={config5} data={data} />
+
 
     </div>,
     document.getElementById('root')
