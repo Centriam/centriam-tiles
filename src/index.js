@@ -5,4 +5,5 @@ export { default as TileRegistry } from 'src/TileRegistry';
 import './tiles/containers';
 import './tiles/basicgraphs';
 
-
+import './containers';
+import './visuals';

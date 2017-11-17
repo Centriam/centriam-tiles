@@ -4,7 +4,6 @@ import {render} from 'react-dom';
 import {AbstractTile, TileFactory, TileRegistry, Style} from "src/index";
 import {defaultStyles} from "src/providers";
 
-import TileContainerConfig from 'src/containers/TileContainer';
 import CardContainerConfig from 'src/containers/CardContainer';
 import HorizontalContainerConfig from 'src/containers/HorizontalContainer';
 import ToggleContainerConfig from 'src/containers/ToggleContainer';
@@ -147,13 +146,27 @@ let numberOverNumberConf = new NumberOverNumberConfig({
 });
 
 
-let config = new TileContainerConfig({
+let tileContainerConfig = {
+    type : 'TileContainer',
+    icon : undefined,
+    iconStyle : {},
+    childConfig: undefined,
+    configType : 'TileContainerConfig',
+    label: undefined,
+    labelStyle : {},
+    style: {}
+};
+
+
+let config = Object.assign({}, tileContainerConfig, {
     label: 'Tile Container',
     icon: <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
         <path d="M0 0h24v24H0z" fill="none"/>
         <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
     </svg>,
-    childConfig: numberOverNumberConf
+    iconStyle: {},
+    childConfig: numberOverNumberConf,
+    labelStyle: {},
 });
 
 
@@ -192,7 +205,7 @@ let config3 = new HorizontalContainerConfig({
     ]
 });
 
-let config4 = new TileContainerConfig({
+let config4 = Object.assign({}, tileContainerConfig, {
     label: 'Containing Container',
     icon: <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
         <path d="M0 0h24v24H0z" fill="none"/>
@@ -201,16 +214,8 @@ let config4 = new TileContainerConfig({
     childConfig: config3
 });
 
-let config5 = new TileContainerConfig();
-config5.childConfig = new CardContainerConfig();
-config5.childConfig.childConfig = new TileContainerConfig();
-config5.childConfig.childConfig.childConfig = new CardContainerConfig();
-config5.childConfig.childConfig.childConfig.childConfig = new TileContainerConfig({
-    childConfig: config2
-    }
-);
 
-let config6 = new TileContainerConfig({
+let config5 = Object.assign({}, tileContainerConfig, {
     style: {width: 500},
     childConfig: new ToggleContainerConfig({
         childrenConfigs: [
@@ -219,10 +224,7 @@ let config6 = new TileContainerConfig({
                 childConfig: {...numberOverNumberConf, dataIndex: 0},
                 style: {backgroundColor: '#55F'}
             }),
-            new CardContainerConfig({
-                childConfig: {...numberOverNumberConf, dataIndex: 1},
-                style: {backgroundColor: '#33a'}
-            })
+            {...numberOverNumberConf, dataIndex: 1,   style: {backgroundColor: '#33a'}},
         ]
     })
 });
@@ -247,11 +249,6 @@ render(
         <br />
 
         <TileFactory config={config5} data={data} />
-
-        <br />
-
-        <TileFactory config={config6} data={data} />
-
 
     </div>,
     document.getElementById('root')
