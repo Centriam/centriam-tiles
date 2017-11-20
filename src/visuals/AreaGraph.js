@@ -1,8 +1,9 @@
 import React from 'react';
-import AbstractVisual from './AbstractVisual';
+import AbstractVisual, {AxisConfig} from './AbstractVisual';
 import TileRegistry from '../TileRegistry';
 import TileTypes from '../TileTypeRegistry';
 import {valueOrDefault} from '../utils';
+import {AbstractTile} from '../tile';
 
 
 import * as ReactFauxDom from 'react-faux-dom';
@@ -16,17 +17,15 @@ export default class AreaGraphConfig extends AbstractVisual {
         super(json);
 
         this.type = AreaGraph.name;
-        this.xAxisColumn = valueOrDefault(json, 'xAxisColumn');
-        this.yAxisColumn = valueOrDefault(json, 'yAxisColumn');
+        this.xAxisColumn = valueOrDefault(json, 'xAxisColumn', AxisConfig);
+        this.yAxisColumn = valueOrDefault(json, 'yAxisColumn', AxisConfig);
 
+        this.lineColor = valueOrDefault(json, 'lineColor', null, 'rgb(4,104,220)');
         this.areaFillColor = valueOrDefault(json, 'areaFillColor', null, '#0468DC');
 
         // TODO? : move these up into the Abstract so every tile can have it's height and width defined?
         this.height = valueOrDefault(json, 'height', null, 250);
         this.width = valueOrDefault(json, 'width', null, 600);
-
-
-
 
     }
 }
@@ -57,25 +56,28 @@ export default class AreaGraphConfig extends AbstractVisual {
  *      * Mouse-over to show the value
  *          * Itself involves
  *
- * @param {Style} style
  * @return {React.ReactElement<any>}
  */
 @TileRegistry.register
-class AreaGraph extends React.Component {
-    render() {
-        const paddingLeft = 30;
-        const paddingBottom = 30;
-        const paddingTop = 50;
-        const paddingRight = 30;
+export class AreaGraph extends AbstractTile {
 
+
+    renderImpl(style) {
         const {
             data,
-            style={},
             ...config
         } = this.props;
 
+        const paddingLeft = 30;
+        const paddingBottom = 30 + (config.xAxisColumn.labelVisible ? 10 : 0);
+        const paddingTop = 50;
+        const paddingRight = 30;
+
         const width = config.width;
         const height = config.height;
+
+        const xAxisColumnHeader = config.xAxisColumn.columnHeader;
+        const yAxisColumnHeader = config.yAxisColumn.columnHeader;
 
         const dataPoints = data.data;
         const dataLength = dataPoints.length;
@@ -85,36 +87,45 @@ class AreaGraph extends React.Component {
             </div>
         }
 
-        const xextents = d3.extent(dataPoints, values => values[config.xAxisColumn]);
-        const yextents = d3.extent(dataPoints, values => values[config.yAxisColumn]);
-        const xscale = d3.scaleLinear()
+        const xextents = d3.extent(dataPoints, values => values[xAxisColumnHeader]);
+        const yextents = d3.extent(dataPoints, values => values[yAxisColumnHeader]);
+
+        let xScale = d3.scaleLinear()
             .domain(xextents)
-            .range([paddingLeft, width - paddingRight])
-            .nice();
-        const yscale = d3.scaleLinear()
+            .range([paddingLeft, width - paddingRight]);
+
+        if(config.xAxisColumn.niceAxis){
+            xScale = xScale.nice()
+        }
+
+        let yScale = d3.scaleLinear()
             .domain(yextents)
-            .range([height - paddingBottom, paddingTop])
-            .nice();
+            .range([height - paddingBottom, paddingTop]);
+
+        if(config.yAxisColumn.niceAxis){
+            yScale = yScale.nice()
+        }
 
         // Direct concatenation is the most performant way to build strings in most JS engines
         const path = d3.path();
         /*scope*/{
             const dataPoint = dataPoints[0];
-            const xplot = xscale(dataPoint[config.xAxisColumn]);
-            const yplot = yscale(dataPoint[config.yAxisColumn]);
+            const xplot = xScale(dataPoint[xAxisColumnHeader]);
+            const yplot = yScale(dataPoint[yAxisColumnHeader]);
             path.moveTo(xplot, yplot);
         }
         for (let i = 1; i < dataLength; i++) {
             const dataPoint = dataPoints[i];
-            const xplot = xscale(dataPoint[config.xAxisColumn]);
-            const yplot = yscale(dataPoint[config.yAxisColumn]);
+            const xplot = xScale(dataPoint[xAxisColumnHeader]);
+            const yplot = yScale(dataPoint[yAxisColumnHeader]);
             path.lineTo(xplot, yplot);
         }
 
+        //Note: this returns a function.
         const area = d3.area().
-            x(d => xscale(d[config.xAxisColumn]) ).
+            x(d => xScale(d[xAxisColumnHeader]) ).
             y0(height - paddingBottom).
-            y1(d => yscale(d[config.yAxisColumn]) );
+            y1(d => yScale(d[yAxisColumnHeader]) );
 
         const ret = ReactFauxDom.createElement('div');
 
@@ -124,7 +135,7 @@ class AreaGraph extends React.Component {
             .attr('height', height);
         g.append('path')
             .attr('d', path.toString())
-            .attr('stroke', 'black')
+            .attr('stroke', config.lineColor)
             .attr('strokeWidth', '1px')
             .attr('fill', 'none');
         g.append('svg:path')
@@ -132,11 +143,43 @@ class AreaGraph extends React.Component {
             .attr('fill', config.areaFillColor);
         g.append('g')
             .attr('transform', `translate(${paddingLeft}, 0)`)
-            .call(d3.axisLeft(yscale));
+            .call(d3.axisLeft(yScale));
         g.append('g')
             .attr('transform', `translate(0, ${height - paddingBottom})`)
-            .call(d3.axisBottom(xscale));
+            .call(
+                d3.axisBottom(xScale)
+                    .tickValues(d3.range(
+                        dataPoints[0][xAxisColumnHeader],
+                        dataPoints[dataLength-1][xAxisColumnHeader]+1,
+                        1
+                    ))
+                    .tickSize(10)
+            );
 
-        return ret.toReact();
+        if(config.xAxisColumn.labelVisible){
+            g.append('text')
+                .attr("class", "x label")
+                .attr("text-anchor", "middle")
+                .attr("x", width/2)
+                .attr("y", height)
+                .attr('fill', config.xAxisColumn.labelColor)
+                .text(config.xAxisColumn.displayLabel);
+        }
+
+        if(config.yAxisColumn.labelVisible){
+            g.append('text')
+                .attr("class", "y label")
+                .attr("text-anchor", "middle")
+                .attr("x", paddingLeft)
+                .attr("y", paddingTop-10)
+                .attr('fill', config.yAxisColumn.labelColor)
+                .text(config.yAxisColumn.displayLabel);
+        }
+
+        return (
+            <div style={Object.assign({}, style)}>
+                {ret.toReact()}
+            </div>
+        );
     }
 }

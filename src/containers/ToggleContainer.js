@@ -3,7 +3,7 @@ import AbstractContainer from './AbstractContainer';
 import {valueOrDefault} from '../utils';
 import TileRegistry from '../TileRegistry';
 import TileTypes from '../TileTypeRegistry';
-import {TileFactory} from '../tile';
+import {TileFactory, AbstractTile} from '../tile';
 
 
 const ToggleContainerStyles = {
@@ -61,7 +61,7 @@ export default class ToggleContainerConfig extends AbstractContainer {
 
 
 @TileRegistry.register
-class ToggleContainer extends React.Component {
+export class ToggleContainer extends AbstractTile {
 
     constructor(props){
        super(props);
@@ -72,17 +72,16 @@ class ToggleContainer extends React.Component {
     }
 
 
-    render(){
+    renderImpl(style){
         let {
             data,
-            moreStyles = {},
             ...config,
         } = this.props;
 
         let active = this.state.active;
 
         return (
-        <div style={Object.assign({}, ToggleContainerStyles.containerStyle, moreStyles, config.style)}>
+        <div style={Object.assign({}, ToggleContainerStyles.containerStyle, style)}>
             <div style={Object.assign({}, ToggleContainerStyles.buttons.containerStyle)}>
                 {config.childrenConfigs.map((child, i)=>
                     <button

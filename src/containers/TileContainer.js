@@ -3,7 +3,7 @@ import AbstractContainer from './AbstractContainer';
 import {valueOrDefault} from '../utils';
 import TileRegistry from '../TileRegistry';
 import TileTypes from '../TileTypeRegistry';
-import {TileFactory} from '../tile';
+import {TileFactory, AbstractTile} from '../tile';
 
 
 const TileContainerStyles = {
@@ -58,23 +58,17 @@ export default class TileContainerConfig extends AbstractContainer {
 
 
 @TileRegistry.register
-class TileContainer extends React.Component {
+export class TileContainer extends AbstractTile {
 
-    constructor(props){
-       super(props);
-    }
-
-
-    render(){
+    renderImpl(style){
         let {
             data,
-            moreStyles = {},
             ...config,
         } = this.props;
 
 
         return (
-        <div style={Object.assign({}, TileContainerStyles.containerStyle, moreStyles, config.style)}>
+        <div style={Object.assign({}, TileContainerStyles.containerStyle, style)}>
             <div className="header" style={Object.assign({}, TileContainerStyles.titleStyle.container)}>
                 <div style={Object.assign({}, TileContainerStyles.titleStyle.iconContainer, config.iconStyle, )}>
                     {config.icon}

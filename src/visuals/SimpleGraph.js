@@ -3,6 +3,7 @@ import AbstractVisual from './AbstractVisual';
 import TileRegistry from '../TileRegistry';
 import TileTypes from '../TileTypeRegistry';
 import {valueOrDefault} from '../utils';
+import {AbstractTile} from '../tile';
 
 @TileTypes.register
 export default class SimpleGraphConfig extends AbstractVisual {
@@ -20,11 +21,10 @@ export default class SimpleGraphConfig extends AbstractVisual {
 
 
 @TileRegistry.register
-class SimpleGraph extends React.Component {
-    render() {
+export class SimpleGraph extends AbstractTile {
+    renderImpl(style) {
         const {
             data,
-            style,
             ...config,
         } = this.props;
 

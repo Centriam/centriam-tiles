@@ -4,8 +4,8 @@ import {valueOrDefault} from './utils';
 
 export default class AbstractConfig {
     constructor(json) {
-        // TODO: add ability to just enable wrapping something in a card
-        // this.card = valueOrDefault(json, 'card', null, false);
+
+        this.card = valueOrDefault(json, 'card', null, false);
         this.configType = this.constructor.name;
 
         this.label = valueOrDefault(json, 'label');

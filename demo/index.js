@@ -9,8 +9,10 @@ import HorizontalContainerConfig from 'src/containers/HorizontalContainer';
 import ToggleContainerConfig from 'src/containers/ToggleContainer';
 import NumberOverNumberConfig, {headerMapping} from 'src/visuals/NumberOverNumber';
 
-import LineGraphConfig from 'src/visuals/LineGraph';
+import LineGraphConfig, {LineGraph} from 'src/visuals/LineGraph';
 import AreaGraphConfig from 'src/visuals/AreaGraph';
+
+import {AxisConfig} from 'src/visuals/AbstractVisual';
 
 /*
 const config = {
@@ -132,6 +134,7 @@ class NPSSummaryCard extends AbstractTile {
 
 
 let numberOverNumberConf = new NumberOverNumberConfig({
+    card:true,
     headerMappings: [
         new headerMapping({
             dataHeader: 'Header 1',
@@ -168,14 +171,12 @@ let config = Object.assign({}, tileContainerConfig, {
         <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
     </svg>,
     iconStyle: {},
-    childConfig: numberOverNumberConf,
+    childConfig: {...numberOverNumberConf, card:false},
     labelStyle: {},
 });
 
 
-let config2 = new CardContainerConfig({
-    childConfig: numberOverNumberConf
-});
+let config2 = numberOverNumberConf;
 
 
 
@@ -184,29 +185,35 @@ let data = {
     data: []
 };
 
-for(let i = 0; i < 100; i++){
+let firstPoint = {[data.headers[0]]:1};
+
+for(let j = 1; j < data.headers.length; j++){
+    firstPoint[data.headers[j]] = Math.floor(Math.random()*20);
+}
+
+data.data.push(firstPoint);
+
+for(let i = 1; i <=52; i++){
     let point = {[data.headers[0]]: i};
     for(let j = 1; j < data.headers.length; j++){
-        point[data.headers[j]] = Math.floor(Math.random()*100);
+        point[data.headers[j]] = data.data[i-1][data.headers[j]] +
+            (Math.floor((Math.random()*2)) % 2 === 0 ? 1 : -1) * Math.floor(Math.random()*5);
     }
     data.data.push(point);
 }
 
 let config3 = new HorizontalContainerConfig({
     childrenConfigs: [
-        new CardContainerConfig({
-            childConfig: {...numberOverNumberConf, dataIndex: 0},
-            style:{backgroundColor:'#55F'}
-        }),
-        new CardContainerConfig({
-            childConfig: {...numberOverNumberConf, dataIndex: 1}
-        }),
-        new CardContainerConfig({
-            childConfig: {...numberOverNumberConf, dataIndex: 2}
-        }),
-        new CardContainerConfig({
-            childConfig: {...numberOverNumberConf, dataIndex: 3}
-        }),
+        Object.assign({},
+            numberOverNumberConf,
+           {
+             dataIndex: 0,
+             style: {backgroundColor: '#55F'},
+           }
+        ),
+        {...numberOverNumberConf, dataIndex: 1},
+        {...numberOverNumberConf, dataIndex: 2},
+        {...numberOverNumberConf, dataIndex: 3},
     ]
 });
 
@@ -225,43 +232,88 @@ let config5 = Object.assign({}, tileContainerConfig, {
         childrenConfigs: [
             new LineGraphConfig({
                 label: 'first',
-                xAxisColumn: data.headers[0],
-                yAxisColumn: data.headers[1],
+                xAxisColumn: new AxisConfig({
+                    columnHeader: data.headers[0],
+                    displayLabel: 'weeks',
+                    labelColor: '#00f',
+                    niceAxis: false,
+                }),
+                yAxisColumn: new AxisConfig({
+                    columnHeader: data.headers[1],
+                    displayLabel: 'Counts',
+                    labelColor: '#aa0'
+                }),
+                height:500,
+                width:800,
             }),
             new AreaGraphConfig({
                 label: 'first - area',
-                xAxisColumn: data.headers[0],
-                yAxisColumn: data.headers[1],
+                xAxisColumn: new AxisConfig({
+                    columnHeader: data.headers[0],
+                    displayLabel: 'weeks',
+                    labelColor: '#00f',
+                    niceAxis: false,
+                }),
+                yAxisColumn: new AxisConfig({
+                    columnHeader: data.headers[1],
+                    displayLabel: 'Counts',
+                    labelColor: '#aa0'
+                }),
+                areaFillColor: 'rgba(4,104,220, .4)',
+                height:500,
+                width:800,
             }),
             new LineGraphConfig({
                 label: 'second',
-                xAxisColumn: data.headers[0],
-                yAxisColumn: data.headers[2],
+                xAxisColumn: AxisConfig.constructFromHeader(data.headers[0]),
+                yAxisColumn: AxisConfig.constructFromHeader(data.headers[2]),
             }),
             new AreaGraphConfig({
                 label: 'second - area',
-                xAxisColumn: data.headers[0],
-                yAxisColumn: data.headers[2],
+                xAxisColumn: AxisConfig.constructFromHeader(data.headers[0]),
+                yAxisColumn: AxisConfig.constructFromHeader(data.headers[2]),
             }),
             new LineGraphConfig({
                 label: 'third',
-                xAxisColumn: data.headers[0],
-                yAxisColumn: data.headers[3],
+                xAxisColumn: AxisConfig.constructFromHeader(data.headers[0]),
+                yAxisColumn: AxisConfig.constructFromHeader(data.headers[3]),
             }),
             new AreaGraphConfig({
                 label: 'third - area',
-                xAxisColumn: data.headers[0],
-                yAxisColumn: data.headers[3],
+                xAxisColumn: AxisConfig.constructFromHeader(data.headers[0]),
+                yAxisColumn: AxisConfig.constructFromHeader(data.headers[3]),
             })
         ]
     })
 });
 
 
+let config7 = new LineGraphConfig({
+        card: true,
+        label: 'first',
+        xAxisColumn: AxisConfig.constructFromHeader(data.headers[0]),
+        yAxisColumn: AxisConfig.constructFromHeader(data.headers[1]),
+        height:300,
+        width:800,
+    });
+
 render(
     <div>
-        <TileFactory config={config} data={data} />
 
+        <div style={{display:'flex'}}>
+            {
+                //base example: note a good chunk of the config was written without classes
+            }
+            <TileFactory config={config} data={data} />
+            {
+                //Classed example: Lots of classes making it easier to make all these charts
+            }
+            <TileFactory config={config5} data={data} />
+            {
+                //Sanity check: very little is actually needed to make a chart, you can just pull the chart directly
+            }
+            <LineGraph {...config7} data={data} />
+        </div>
         <br/>
 
         <TileFactory config={config2} data={data} />
@@ -276,7 +328,7 @@ render(
 
         <br />
 
-        <TileFactory config={config5} data={data} />
+
 
 
     </div>,

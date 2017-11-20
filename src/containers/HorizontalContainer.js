@@ -3,7 +3,7 @@ import AbstractContainer from './AbstractContainer';
 import {valueOrDefault} from '../utils';
 import TileRegistry from '../TileRegistry';
 import TileTypes from '../TileTypeRegistry';
-import {TileFactory} from '../tile';
+import {TileFactory, AbstractTile} from '../tile';
 
 
 const HorizontalContainerStyles = {
@@ -20,30 +20,23 @@ export default class HorizontalContainerConfig extends AbstractContainer {
         super(json);
         this.type = HorizontalContainer.name;
         this.childrenConfigs = valueOrDefault(json, 'childrenConfigs', null, this.childConfig ? [this.childConfig]: [])
-
     }
 }
 
 
 
 @TileRegistry.register
-class HorizontalContainer extends React.Component {
+export class HorizontalContainer extends AbstractTile {
 
-    constructor(props){
-       super(props);
-    }
-
-
-    render(){
+    renderImpl(style={}){
         let {
             data,
-            moreStyles = {},
             ...config,
         } = this.props;
 
 
         return (
-        <div style={Object.assign({}, HorizontalContainerStyles.containerStyle, moreStyles, config.style)}>
+        <div style={Object.assign({}, HorizontalContainerStyles.containerStyle, style)}>
             {config.childrenConfigs.map((config, i)=>{
                return <TileFactory
                    key={i}

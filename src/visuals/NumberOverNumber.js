@@ -3,6 +3,8 @@ import AbstractVisual from './AbstractVisual';
 import TileRegistry from '../TileRegistry';
 import TileTypes from '../TileTypeRegistry';
 import {valueOrDefault} from '../utils';
+import {AbstractTile} from '../tile';
+
 
 const styles  = {
     defaultPrimary: {
@@ -62,11 +64,10 @@ export default class NumberOverNumberConfig  extends AbstractVisual {
 
 
 @TileRegistry.register
-class NumberOverNumberTile extends React.Component {
-    render() {
+export class NumberOverNumberTile extends AbstractTile {
+    renderImpl(style) {
         const {
             data,
-            moreStyles={},
             ...config,
         } = this.props;
 
@@ -81,7 +82,7 @@ class NumberOverNumberTile extends React.Component {
 
 
         return (
-            <div style={Object.assign({}, moreStyles, config.style)}>
+            <div style={Object.assign({}, style)}>
                 {dataPoints.map((point, i)=>{
                     return <div key={i} style={Object.assign({}, numberOverNumberStyles.numberGroupingContainer)}>
                         <div style={point.headerStyle}>{point.displayHeader}</div>
