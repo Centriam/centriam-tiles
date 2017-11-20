@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {render} from 'react-dom';
 
-import {AbstractTile, TileFactory, TileRegistry, Style} from "src/index";
-import {defaultStyles} from "src/providers";
+import {AbstractTile, TileFactory, TileRegistry, Style, defaultStyles} from "src";
 
 import CardContainerConfig from 'src/containers/CardContainer';
 import HorizontalContainerConfig from 'src/containers/HorizontalContainer';

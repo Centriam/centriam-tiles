@@ -1,15 +1,20 @@
 const path = require('path');
 
+// Common configuration attributes
 module.exports = {
     entry: {
-        index: "./src/index.js",
+        bundle: "./demo/index.js",
+        // d3: "node_modules/d3",
+        // react: "node_modules/react",
+        // react_dom: "node_modules/react-dom",
+        // react_faux_dom: "node_modules/react-faux-dom",
     },
-    // output: {
-    //     path: __dirname + "/dist",
-    //     filename: "[name].js",
-    //     library: "centriam-tiles",
-    //     libraryTarget: "umd",
-    // },
+    output: {
+        path: __dirname + "/dist",
+        filename: "[name].js",
+        library: "[name]",
+        libraryTarget: "var",
+    },
 
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
@@ -25,12 +30,9 @@ module.exports = {
 
     module: {
         rules: [
-            {
-                test: /\.jsx?$/,
-                use: [{
-                    loader: "babel-loader",
-                }
-            ]},
+            { test: /\.jsx?$/, use: [{
+                loader: "babel-loader",
+            }]},
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             // { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }

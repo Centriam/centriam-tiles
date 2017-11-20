@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Component } from 'react';
 
-import TileRegistry from "src/TileRegistry";
-import {ComponentClass, or} from 'src/utils';
+import TileRegistry from "./TileRegistry";
+import {ComponentClass, or} from './utils';
 import {defaultStyles} from "./providers";
 
 
