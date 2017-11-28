@@ -3,6 +3,9 @@ export { default as TileRegistry } from './TileRegistry';
 export { defaultStyles } from './providers';
 
 // Load tiles so they self-register
+import './containers';
+import './visuals';
+
 // (NOTE: UglifyJS will still see this as dead code!
 export * from './tiles';
 

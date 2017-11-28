@@ -3,6 +3,17 @@ import {render} from 'react-dom';
 
 import {AbstractTile, TileFactory, TileRegistry, Style, defaultStyles} from "src";
 
+import CardContainerConfig from 'src/containers/CardContainer';
+import HorizontalContainerConfig from 'src/containers/HorizontalContainer';
+import ToggleContainerConfig from 'src/containers/ToggleContainer';
+import NumberOverNumberConfig, {headerMapping} from 'src/visuals/NumberOverNumber';
+
+import LineGraphConfig, {LineGraph} from 'src/visuals/LineGraph';
+import AreaGraphConfig from 'src/visuals/AreaGraph';
+
+import {AxisConfig} from 'src/visuals/AbstractVisual';
+
+/*
 const config = {
     type: 'FixedContainer',
     direction: 'HORIZONTAL',
@@ -56,41 +67,6 @@ const themeColors = {
     RED: '#f71f2c',
 };
 
-@TileRegistry.register
-class NumberOverNumberTile extends AbstractTile {
-    renderImpl(style) {
-        const {
-            header1,
-            header2,
-            data,
-        } = this.props;
-
-        const header1Style = {
-            ...defaultStyles.numberOverNumber.header1Style,
-        };
-
-        const value1Style = {
-            ...defaultStyles.numberOverNumber.value1Style,
-        };
-
-        const header2Style = {
-            ...defaultStyles.numberOverNumber.header2Style,
-        };
-
-        const value2Style = {
-            ...defaultStyles.numberOverNumber.value2Style,
-        };
-
-        return (
-            <div style={style}>
-                <div style={header1Style}>{header1}</div>
-                <div style={value1Style}>{data.value1}</div>
-                <div style={header2Style}>{header2}</div>
-                <div style={value2Style}>{data.value2}</div>
-            </div>
-        );
-    }
-}
 
 @TileRegistry.register
 class NPSSummaryCard extends AbstractTile {
@@ -153,154 +129,207 @@ class NPSSummaryCard extends AbstractTile {
 //     }
 // }
 
+*/
 
+
+let numberOverNumberConf = new NumberOverNumberConfig({
+    card:true,
+    headerMappings: [
+        new headerMapping({
+            dataHeader: 'Header 1',
+            displayHeader: "First",
+            headerStyle: headerMapping.STYLES.defaultPrimary.headerStyle,
+            dataStyle: headerMapping.STYLES.defaultPrimary.dataStyle
+        }),
+        new headerMapping({
+            dataHeader: 'Header 2',
+            displayHeader: "LAST",
+            headerStyle: headerMapping.STYLES.defaultSecondary.headerStyle,
+            dataStyle: headerMapping.STYLES.defaultSecondary.dataStyle
+        })
+    ]
+});
+
+
+let tileContainerConfig = {
+    type : 'TileContainer',
+    icon : undefined,
+    iconStyle : {},
+    childConfig: undefined,
+    configType : 'TileContainerConfig',
+    label: undefined,
+    labelStyle : {},
+    style: {}
+};
+
+
+let config = Object.assign({}, tileContainerConfig, {
+    label: 'Tile Container',
+    icon: <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 0h24v24H0z" fill="none"/>
+        <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+    </svg>,
+    iconStyle: {},
+    childConfig: {...numberOverNumberConf, card:false},
+    labelStyle: {},
+});
+
+
+let config2 = numberOverNumberConf;
+
+
+
+let data = {
+    headers: ['x', 'Header 1', 'Header 2', 'Header 3'],
+    data: []
+};
+
+let firstPoint = {[data.headers[0]]:1};
+
+for(let j = 1; j < data.headers.length; j++){
+    firstPoint[data.headers[j]] = Math.floor(Math.random()*20);
+}
+
+data.data.push(firstPoint);
+
+for(let i = 1; i <=52; i++){
+    let point = {[data.headers[0]]: i};
+    for(let j = 1; j < data.headers.length; j++){
+        point[data.headers[j]] = data.data[i-1][data.headers[j]] +
+            (Math.floor((Math.random()*2)) % 2 === 0 ? 1 : -1) * Math.floor(Math.random()*5);
+    }
+    data.data.push(point);
+}
+
+let config3 = new HorizontalContainerConfig({
+    childrenConfigs: [
+        Object.assign({},
+            numberOverNumberConf,
+           {
+             dataIndex: 0,
+             style: {backgroundColor: '#55F'},
+           }
+        ),
+        {...numberOverNumberConf, dataIndex: 1},
+        {...numberOverNumberConf, dataIndex: 2},
+        {...numberOverNumberConf, dataIndex: 3},
+    ]
+});
+
+let config4 = Object.assign({}, tileContainerConfig, {
+    label: 'Containing Container',
+    icon: <svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 0h24v24H0z" fill="none"/>
+        <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+    </svg>,
+    childConfig: config3
+});
+
+
+let config5 = Object.assign({}, tileContainerConfig, {
+    childConfig: new ToggleContainerConfig({
+        childrenConfigs: [
+            new LineGraphConfig({
+                label: 'first',
+                xAxisColumn: new AxisConfig({
+                    columnHeader: data.headers[0],
+                    displayLabel: 'weeks',
+                    labelColor: '#00f',
+                    niceAxis: false,
+                }),
+                yAxisColumn: new AxisConfig({
+                    columnHeader: data.headers[1],
+                    displayLabel: 'Counts',
+                    labelColor: '#aa0'
+                }),
+                height:500,
+                width:800,
+            }),
+            new AreaGraphConfig({
+                label: 'first - area',
+                xAxisColumn: new AxisConfig({
+                    columnHeader: data.headers[0],
+                    displayLabel: 'weeks',
+                    labelColor: '#00f',
+                    niceAxis: false,
+                }),
+                yAxisColumn: new AxisConfig({
+                    columnHeader: data.headers[1],
+                    displayLabel: 'Counts',
+                    labelColor: '#aa0'
+                }),
+                areaFillColor: 'rgba(4,104,220, .4)',
+                height:500,
+                width:800,
+            }),
+            new LineGraphConfig({
+                label: 'second',
+                xAxisColumn: AxisConfig.constructFromHeader(data.headers[0]),
+                yAxisColumn: AxisConfig.constructFromHeader(data.headers[2]),
+            }),
+            new AreaGraphConfig({
+                label: 'second - area',
+                xAxisColumn: AxisConfig.constructFromHeader(data.headers[0]),
+                yAxisColumn: AxisConfig.constructFromHeader(data.headers[2]),
+            }),
+            new LineGraphConfig({
+                label: 'third',
+                xAxisColumn: AxisConfig.constructFromHeader(data.headers[0]),
+                yAxisColumn: AxisConfig.constructFromHeader(data.headers[3]),
+            }),
+            new AreaGraphConfig({
+                label: 'third - area',
+                xAxisColumn: AxisConfig.constructFromHeader(data.headers[0]),
+                yAxisColumn: AxisConfig.constructFromHeader(data.headers[3]),
+            })
+        ]
+    })
+});
+
+
+let config7 = new LineGraphConfig({
+        card: true,
+        label: 'first',
+        xAxisColumn: AxisConfig.constructFromHeader(data.headers[0]),
+        yAxisColumn: AxisConfig.constructFromHeader(data.headers[1]),
+        height:300,
+        width:800,
+    });
 
 render(
     <div>
-        <TileFactory config={config} data={data} />
+
+        <div style={{display:'flex'}}>
+            {
+                //base example: note a good chunk of the config was written without classes
+            }
+            <TileFactory config={config} data={data} />
+            {
+                //Classed example: Lots of classes making it easier to make all these charts
+            }
+            <TileFactory config={config5} data={data} />
+            {
+                //Sanity check: very little is actually needed to make a chart, you can just pull the chart directly
+            }
+            <LineGraph {...config7} data={data} />
+        </div>
+        <br/>
+
+        <TileFactory config={config2} data={data} />
 
         <br />
 
-        <TileFactory
-            config={{
-                type: 'FixedContainer',
-                childConfigs: [
-                    {
-                        type: 'NumberOverNumberTile',
-                        card: true,
-                        header1: 'Total Customers in Campaign',
-                        header2: 'Percentage of All Customers',
-                    },
-                    {
-                        type: 'NumberOverNumberTile',
-                        card: true,
-                        header1: 'Contact Customers',
-                        header2: 'Percentage of Campaign Customers',
-                    },
-                    {
-                        type: 'NumberOverNumberTile',
-                        card: true,
-                        header1: 'Left to Contact',
-                        header2: 'Percentage of Campaign Customers',
-                    },
-                    {
-                        type: 'NumberOverNumberTile',
-                        card: true,
-                        header1: 'Customers in Control Group',
-                        header2: 'Percentage of All Customers',
-                    },
-                ]
-            }}
-            data={[
-                {
-                    value1: '2,500',
-                    value2: '14.68%',
-                },
-                {
-                    value1: 1459,
-                    value2: '58.36%',
-                },
-                {
-                    value1: 1041,
-                    value2: '41.64%',
-                },
-                {
-                    value1: 750,
-                    value2: '30.00%',
-                },
-            ]}
-        />
+        <TileFactory config={config3} data={data} />
 
         <br />
 
-        <TileFactory
-            config={{
-                type: 'NPSSummaryCard',
-                sectionHeaders: [
-                    'Customers',
-                    'Percentage',
-                ],
-                style: {
-                    background: themeColors.GREEN,
-                    color: 'white',
-                }
-            }}
-            data={[
-                500,
-                '20.00',
-            ]}
-        />
-        {/*
-        <TileFactory
-            config={{
-                type: 'NPSSummary',
-            }}
-            data={[
-                [
-                    [
-                        'Recommended Offers Given',
-                        100,
-                        '50.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Given',
-                        20,
-                        '20.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Accepted',
-                        99,
-                        '99.00%',
-                    ],
-                ],
-                [
-                    [
-                        'Recommended Offers Given',
-                        60,
-                        '30.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Given',
-                        35,
-                        '35.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Accepted',
-                        50,
-                        '83.33%',
-                    ],
-                ],
-                [
-                    [
-                        'Recommended Offers Given',
-                        40,
-                        '40.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Given',
-                        45,
-                        '45.00%',
-                    ],
-                    [
-                        'Non-Recommended Offers Accepted',
-                        31,
-                        '77.50%',
-                    ],
-                ],
-            ]}
-        />
-        */}
+        <TileFactory config={config4} data={data} />
 
         <br />
 
-        <TileFactory
-            config={{
-                type: 'SimpleD3Graph',
-                card: true,
 
-            }}
-            data={US_POPULATION}
-        />
+
+
     </div>,
     document.getElementById('root')
 );
