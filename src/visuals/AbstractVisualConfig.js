@@ -1,7 +1,7 @@
-import Abstract from '../Abstracts';
+import AbstractConfig from '../Abstracts';
 import {valueOrDefault} from '../utils';
 
-export default class AbstractVisual extends Abstract {
+export default class AbstractVisualConfig extends AbstractConfig {
    //I swear there is supposed to be something here, but I can't think of it at the moment
 }
 

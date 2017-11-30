@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Component } from 'react';
+import { validate } from 'jsonschema';
 
 import TileRegistry from "./TileRegistry";
-import {ComponentClass, or} from './utils';
-import {defaultStyles} from "./providers";
+import {ComponentClass, getWrappedComponent, isDefined, or} from './utils';
 
 
 /**
@@ -11,8 +11,19 @@ import {defaultStyles} from "./providers";
  */
 export class TileFactory extends Component {
     render() {
+        if (!isDefined(this.props.config.type)) {
+            throw new Error('Tile type is not defined');
+        }
+
         const Component = TileRegistry.get(this.props.config.type);
+
         if (Component) {
+            // Validate configuration before rendering component
+            const wrappedComponent = getWrappedComponent(Component);
+            if (isDefined(wrappedComponent.CONFIG_SCHEMA)) {
+                validate(this.props.config, wrappedComponent.CONFIG_SCHEMA, {throwError: true});
+            }
+
             return (
                 <Component
                     {...this.props.config}
@@ -26,9 +37,11 @@ export class TileFactory extends Component {
     }
 }
 
-export class AbstractTile<Config, Data> extends Component {
+export class AbstractTile extends Component {
 
-    renderImpl(style) { throw new Error("Unimplemented abstract method"); }
+    renderImpl(style) {
+        throw new Error("Unimplemented abstract method");
+    }
 
     render() {
         let {
@@ -44,29 +57,40 @@ export class AbstractTile<Config, Data> extends Component {
         };
 
         if (config.card) {
-
-
-            let cardConfig = {
-                card: false, //Do not card for eternity
-                childConfig: {...config, card:false},
-                configType: "CardContainerConfig",
-                label: undefined,
-                labelStyle: {},
-                style: undefined,
-                type: "CardContainer",
-            };
-
             return (
-                <TileFactory
-                    config={cardConfig}
-                    data={this.props.data}
-                    style={combinedStyles}
-                />
+                <TileFactory data={this.props.data} config={{
+                    type: 'CardContainer',
+                    childConfig: {...config, card:false},
+                    style: combinedStyles,
+                }} />
             );
         } else {
             return this.renderImpl(combinedStyles);
         }
     }
+
+    static CONFIG_SCHEMA = {
+        type: 'object',
+    };
+
+    /**
+     * Helper to build and validate a configuration object
+     * @param {Object} config
+     */
+    static config(config) {
+
+        const ret = {
+            ...config,
+            type: this.name,
+        };
+
+        if (this.CONFIG_SCHEMA) {
+            validate(ret, this.CONFIG_SCHEMA, {throwError: true});
+        }
+
+        return ret;
+    }
 }
+
 
 

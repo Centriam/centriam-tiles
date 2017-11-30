@@ -46,7 +46,7 @@ export class CardContainer extends AbstractTile {
                 <TileFactory
                     config={config.childConfig}
                     data={data}
-                    style={config.childConfig.style}
+                    style={{height: '100%'}}
                 />
             }
         </div>

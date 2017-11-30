@@ -7,5 +7,5 @@ import './containers';
 import './visuals';
 
 // (NOTE: UglifyJS will still see this as dead code!
-export * as tiles from './tiles';
+export * from './tiles';
 
