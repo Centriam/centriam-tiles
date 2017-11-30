@@ -60,28 +60,46 @@ export default class TileContainerConfig extends AbstractContainer {
 @TileRegistry.register
 export class TileContainer extends AbstractTile {
 
+    static CONFIG_SCHEMA = {
+        type: 'object',
+        required: ['childConfig'],
+        properties: {
+            childConfig: { type: 'object' },
+            icon: { type: 'object', }, // React virtual DOM
+            iconStyle: { type: 'object', },
+            label: { type: 'string', },
+            labelStyle: { type: 'object' },
+            style: { type: 'object' },
+        },
+    };
+
     renderImpl(style){
         let {
             data,
-            ...config,
+
+            childConfig,
+            icon,
+            iconStyle,
+            label,
+            labelStyle,
         } = this.props;
 
 
         return (
         <div style={Object.assign({}, TileContainerStyles.containerStyle, style)}>
             <div className="header" style={Object.assign({}, TileContainerStyles.titleStyle.container)}>
-                <div style={Object.assign({}, TileContainerStyles.titleStyle.iconContainer, config.iconStyle, )}>
-                    {config.icon}
+                <div style={Object.assign({}, TileContainerStyles.titleStyle.iconContainer, iconStyle, )}>
+                    {icon}
                 </div>
-                <div style={Object.assign({}, TileContainerStyles.titleStyle.titleContainer, config.labelStyle)}>
-                    {config.label}
+                <div style={Object.assign({}, TileContainerStyles.titleStyle.titleContainer, labelStyle)}>
+                    {label}
                 </div>
             </div>
-            {config.childConfig &&
+            {childConfig &&
                 <TileFactory
-                    config={config.childConfig}
+                    config={childConfig}
                     data={data}
-                    style={config.style}
+                    style={{height: '100%', ...style}}
                 />
             }
         </div>

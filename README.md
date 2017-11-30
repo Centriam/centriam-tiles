@@ -82,3 +82,31 @@ Your tile will be available through `<Tile />` configurations
     - MUST run typescript over project
     - MAY preserve ES6 and JSX
     - Consider making project `node_modules` directory ephemeral 
+
+
+
+# Random notes (Karl)
+
+I'm going to have to put this away soon, so this is where I'm at right now:
+
+- I need to build a "Style Provider" to manage the tiles' themes. The goal is to build a style manager system that works
+  on two levels:
+
+    1. High-level configuration that affects multiple aspects of the tiles' appearance.
+       Things that can't always be blindly applied to the root of a document
+        - Font family
+        - Font size
+        - Color scheme
+        - Horizontal and vertical margins/padding.
+    2. Low-level configuration of individual tile styles. Many settings use the high-level settings.
+
+- I want to make it so if you define a `static CONFIG_SCHEMA` property on the class, the `<TileBuilder>` will validate the
+  Tile's configuration before attempting to render it.
+
+- David made a bunch of helper classes named `*Config` to build a tile's configuration. They fill four purposes:
+    1. Fill in the "type" property
+    2. Provide sane default values
+    3. Help validate input
+    4. (Future) Help migrate tile configurations from old versions 
+
+- I need to figure out how to compile this separately from CX so I can disable tree-shaking.

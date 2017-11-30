@@ -3,8 +3,9 @@ version: '2'
 services:
     dev-server:
         image: node:9.1-slim
-        command: bash -c 'cd /opt/centriam-tiles && npm install && /opt/centriam-tiles/node_modules/.bin/webpack-dev-server --color --config webpack.dev-server.config.js'
         volumes:
             - .:/opt/centriam-tiles
         ports:
             - '9000:9000'
+        working_dir: /opt/centriam-tiles
+        command: bash -c 'npm install && node_modules/.bin/webpack-dev-server --color --config webpack.dev-server.config.js'

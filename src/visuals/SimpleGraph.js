@@ -1,19 +1,19 @@
 import React from 'react';
-import AbstractVisual from './AbstractVisual';
+import AbstractVisualConfig from './AbstractVisualConfig';
 import TileRegistry from '../TileRegistry';
 import TileTypes from '../TileTypeRegistry';
 import {valueOrDefault} from '../utils';
 import {AbstractTile} from '../tile';
 
 @TileTypes.register
-export default class SimpleGraphConfig extends AbstractVisual {
+export default class SimpleGraphConfig extends AbstractVisualConfig {
     constructor(json){
         super(json);
         this.type = SimpleGraph.name;
         this.xAxisColumn = valueOrDefault(json, 'xAxisColumn');
         this.yAxisColumn = valueOrDefault(json, 'yAxisColumn');
 
-        // TODO? : move these up into the Abstract so every tile can have it's height and width defined?
+        // TODO? : move these up into the Abstract so every tile can have its height and width defined?
         this.height = valueOrDefault(json, 'height', null, 250);
         this.width = valueOrDefault(json, 'width', null, 600);
     }

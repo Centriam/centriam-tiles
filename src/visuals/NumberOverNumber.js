@@ -1,5 +1,5 @@
 import React from 'react';
-import AbstractVisual from './AbstractVisual';
+import AbstractVisualConfig from './AbstractVisualConfig';
 import TileRegistry from '../TileRegistry';
 import TileTypes from '../TileTypeRegistry';
 import {valueOrDefault} from '../utils';
@@ -49,14 +49,13 @@ const numberOverNumberStyles = {
 
 
 @TileTypes.register
-export default class NumberOverNumberConfig  extends AbstractVisual {
+export default class NumberOverNumberConfig  extends AbstractVisualConfig {
     constructor(json){
         super(json);
 
         this.type = NumberOverNumberTile.name;
         this.headerMappings = valueOrDefault(json, 'headerMappings', null, []);
         this.dataIndex = valueOrDefault(json, 'dataIndex', null, 0);
-
     }
 }
 
@@ -65,21 +64,36 @@ export default class NumberOverNumberConfig  extends AbstractVisual {
 
 @TileRegistry.register
 export class NumberOverNumberTile extends AbstractTile {
+    static CONFIG_SCHEMA = {
+        type: 'object',
+        required: ['headerMappings', 'dataIndex'],
+        properties: {
+            headerMappings: {
+                type: 'array',
+                items: {
+                    required: ['dataHeader', 'displayHeader', 'headerStyle', 'dataStyle'],
+                    properties: {
+                        dataHeader: {type: 'string'},
+                        displayHeader: {type: 'string'},
+                        headerStyle: {type: 'object'},
+                        dataStyle: {type: 'object'},
+                    }
+                }
+            },
+            dataIndex: { type: 'number' },
+        }
+    };
+
     renderImpl(style) {
         const {
             data,
             ...config,
         } = this.props;
 
-
-        let dataPoints = [];
-        for(let i = 0; i < config.headerMappings.length; i++){
-            dataPoints.push({
-                ...config.headerMappings[i],
-                data:data.data[config.dataIndex][config.headerMappings[i].dataHeader],
-            });
-        }
-
+        const dataPoints = config.headerMappings.map(mapping => ({
+            ...mapping,
+            data: data.data[config.dataIndex][mapping.dataHeader],
+        }));
 
         return (
             <div style={Object.assign({}, style)}>

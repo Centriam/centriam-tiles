@@ -71,3 +71,10 @@ export function isDefined(variable){
     }
     return true;
 }
+
+export function getWrappedComponent(component) {
+    while (component.wrapped) {
+        component = component.wrapped;
+    }
+    return component;
+}

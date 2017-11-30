@@ -3,7 +3,7 @@ import AbstractContainer from './AbstractContainer';
 import {valueOrDefault} from '../utils';
 import TileRegistry from '../TileRegistry';
 import TileTypes from '../TileTypeRegistry';
-import {TileFactory, AbstractTile} from '../tile';
+import {AbstractTile, TileFactory} from '../tile';
 
 
 const HorizontalContainerStyles = {
@@ -19,7 +19,7 @@ export default class HorizontalContainerConfig extends AbstractContainer {
     constructor(json){
         super(json);
         this.type = HorizontalContainer.name;
-        this.childrenConfigs = valueOrDefault(json, 'childrenConfigs', null, this.childConfig ? [this.childConfig]: [])
+        this.childConfigs = valueOrDefault(json, 'childConfigs', null, this.childConfig ? [this.childConfig]: [])
     }
 }
 
@@ -27,6 +27,10 @@ export default class HorizontalContainerConfig extends AbstractContainer {
 
 @TileRegistry.register
 export class HorizontalContainer extends AbstractTile {
+    static CONFIG_SCHEMA = {
+        type: 'object',
+        required: ['childConfigs'],
+    };
 
     renderImpl(style={}){
         let {
@@ -37,7 +41,7 @@ export class HorizontalContainer extends AbstractTile {
 
         return (
         <div style={Object.assign({}, HorizontalContainerStyles.containerStyle, style)}>
-            {config.childrenConfigs.map((config, i)=>{
+            {config.childConfigs.map((config, i)=>{
                return <TileFactory
                    key={i}
                    config={config}

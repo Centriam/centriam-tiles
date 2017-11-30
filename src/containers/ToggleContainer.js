@@ -54,7 +54,7 @@ export default class ToggleContainerConfig extends AbstractContainer {
     constructor(json){
         super(json);
         this.type = ToggleContainer.name;
-        this.childrenConfigs = valueOrDefault(json, 'childrenConfigs', null, this.childConfig ? [this.childConfig]: [])
+        this.childConfigs = valueOrDefault(json, 'childConfigs', null, this.childConfig ? [this.childConfig]: [])
     }
 }
 
@@ -63,11 +63,22 @@ export default class ToggleContainerConfig extends AbstractContainer {
 @TileRegistry.register
 export class ToggleContainer extends AbstractTile {
 
+    static CONFIG_SCHEMA = {
+        type: 'object',
+        required: ['childConfigs'],
+        properties: {
+            childConfigs: {
+                type: 'array',
+                items: { type: 'object' },
+            },
+        },
+    };
+
     constructor(props){
        super(props);
 
         this.state = {
-            active: this.props.childrenConfigs[0]
+            activeId: 0,
         };
     }
 
@@ -78,27 +89,34 @@ export class ToggleContainer extends AbstractTile {
             ...config,
         } = this.props;
 
-        let active = this.state.active;
+        let activeId = this.state.activeId;
 
         return (
         <div style={Object.assign({}, ToggleContainerStyles.containerStyle, style)}>
+            {(this.props.childConfigs && activeId <= this.props.childConfigs.length) &&
+                <TileFactory
+                    config={this.props.childConfigs[activeId]}
+                    data={data}
+                    style={this.props.childConfigs[activeId].style}
+                />
+            }
             <div style={Object.assign({}, ToggleContainerStyles.buttons.containerStyle)}>
-                {config.childrenConfigs.map((child, i)=>
+                {config.childConfigs.map((child, i)=>
                     <button
                         key={i}
                         id={i}
                         onClick={(e)=>{
-                            this.setState({active:child});
+                            this.setState({activeId:i});
                             e.target.blur();
                         }}
                         style={Object.assign({},
                             ToggleContainerStyles.buttons.base,
-                            (this.state.active === child ?
+                            (this.state.activeId === i ?
                                 ToggleContainerStyles.buttons.active :
                                 ToggleContainerStyles.buttons.inactive
                             ),
                             i === 0 ? ToggleContainerStyles.buttons.first : {},
-                            i === config.childrenConfigs.length-1 ? ToggleContainerStyles.buttons.last : {},
+                            i === config.childConfigs.length-1 ? ToggleContainerStyles.buttons.last : {},
                             i % 2 ? ToggleContainerStyles.buttons.addBorders : {},
                         )}
                     >
@@ -106,11 +124,6 @@ export class ToggleContainer extends AbstractTile {
                     </button>
                 )}
             </div>
-            <TileFactory
-                config={active}
-                data={data}
-                style={active.style}
-            />
 
         </div>
         )
