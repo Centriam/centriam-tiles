@@ -37,6 +37,7 @@ export class CardContainer extends AbstractTile {
     renderImpl(style={}){
         let {
             data,
+            accessHash,
             ...config,
         } = this.props;
 
@@ -47,6 +48,7 @@ export class CardContainer extends AbstractTile {
                     config={config.childConfig}
                     data={data}
                     style={config.childConfig.style}
+                    accessHash={accessHash}
                 />
             }
         </div>

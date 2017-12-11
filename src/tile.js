@@ -18,6 +18,7 @@ export class TileFactory extends Component {
                     {...this.props.config}
                     data={this.props.data}
                     moreStyles={this.props.style}
+                    accessHash={this.props.accessHash}
                 />
             );
         } else {
@@ -34,6 +35,7 @@ export class AbstractTile<Config, Data> extends Component {
         let {
             style={},
             moreStyles = {},
+            accessHash,
             ...config,
         } = this.props;
 
@@ -61,6 +63,7 @@ export class AbstractTile<Config, Data> extends Component {
                     config={cardConfig}
                     data={this.props.data}
                     style={combinedStyles}
+                    accessHash={accessHash}
                 />
             );
         } else {

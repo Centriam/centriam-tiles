@@ -31,6 +31,7 @@ export class HorizontalContainer extends AbstractTile {
     renderImpl(style={}){
         let {
             data,
+            accessHash,
             ...config,
         } = this.props;
 
@@ -43,6 +44,7 @@ export class HorizontalContainer extends AbstractTile {
                    config={config}
                    data={data}
                    style={Object.assign({}, {flex:1}, config.style)}
+                   accessHash={accessHash}
                />
             })}
         </div>

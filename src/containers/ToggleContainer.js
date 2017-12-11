@@ -75,6 +75,7 @@ export class ToggleContainer extends AbstractTile {
     renderImpl(style){
         let {
             data,
+            accessHash,
             ...config,
         } = this.props;
 
@@ -110,6 +111,7 @@ export class ToggleContainer extends AbstractTile {
                 config={active}
                 data={data}
                 style={active.style}
+                accessHash={accessHash}
             />
 
         </div>

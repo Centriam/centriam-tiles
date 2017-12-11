@@ -63,6 +63,7 @@ export class TileContainer extends AbstractTile {
     renderImpl(style){
         let {
             data,
+            accessHash,
             ...config,
         } = this.props;
 
@@ -82,6 +83,7 @@ export class TileContainer extends AbstractTile {
                     config={config.childConfig}
                     data={data}
                     style={config.style}
+                    accessHash={accessHash}
                 />
             }
         </div>
