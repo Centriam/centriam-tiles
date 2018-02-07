@@ -18,6 +18,7 @@ export class TileFactory extends Component {
                     {...this.props.config}
                     data={this.props.data}
                     moreStyles={this.props.style}
+                    accessHash={this.props.accessHash}
                 />
             );
         } else {
@@ -31,25 +32,41 @@ export class AbstractTile<Config, Data> extends Component {
     renderImpl(style) { throw new Error("Unimplemented abstract method"); }
 
     render() {
-        const style = this.props.style || {};
-        const moreStyles = this.props.moreStyles || {};
-        if (this.props.card) {
-            const combinedStyles = {
-                ...(defaultStyles.card),
-                ...(defaultStyles.container),
-                ...style,
-                ...moreStyles,
+        let {
+            style={},
+            moreStyles = {},
+            accessHash,
+            ...config,
+        } = this.props;
+
+
+        const combinedStyles = {
+            ...(moreStyles),
+            ...(style),
+        };
+
+        if (config.card) {
+
+
+            let cardConfig = {
+                card: false, //Do not card for eternity
+                childConfig: {...config, card:false},
+                configType: "CardContainerConfig",
+                label: undefined,
+                labelStyle: {},
+                style: undefined,
+                type: "CardContainer",
             };
+
             return (
-                <div style={combinedStyles}>
-                    {this.renderImpl({flexGrow: 1})}
-                </div>
+                <TileFactory
+                    config={cardConfig}
+                    data={this.props.data}
+                    style={combinedStyles}
+                    accessHash={accessHash}
+                />
             );
         } else {
-            const combinedStyles = {
-                ...(moreStyles),
-                ...(style),
-            };
             return this.renderImpl(combinedStyles);
         }
     }

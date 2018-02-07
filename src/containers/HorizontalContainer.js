@@ -1,0 +1,54 @@
+import React from 'react';
+import AbstractContainer from './AbstractContainer';
+import {valueOrDefault} from '../utils';
+import TileRegistry from '../TileRegistry';
+import TileTypes from '../TileTypeRegistry';
+import {TileFactory, AbstractTile} from '../tile';
+
+
+const HorizontalContainerStyles = {
+    containerStyle: {
+       display:'flex',
+    },
+};
+
+
+
+@TileTypes.register
+export default class HorizontalContainerConfig extends AbstractContainer {
+    constructor(json){
+        super(json);
+        this.type = HorizontalContainer.name;
+        this.childrenConfigs = valueOrDefault(json, 'childrenConfigs', null, this.childConfig ? [this.childConfig]: [])
+    }
+}
+
+
+
+@TileRegistry.register
+export class HorizontalContainer extends AbstractTile {
+
+    renderImpl(style={}){
+        let {
+            data,
+            accessHash,
+            ...config,
+        } = this.props;
+
+
+        return (
+        <div style={Object.assign({}, HorizontalContainerStyles.containerStyle, style)}>
+            {config.childrenConfigs.map((config, i)=>{
+               return <TileFactory
+                   key={i}
+                   config={config}
+                   data={data}
+                   style={Object.assign({}, {flex:1}, config.style)}
+                   accessHash={accessHash}
+               />
+            })}
+        </div>
+        )
+    }
+
+}
